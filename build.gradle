@@ -32,6 +32,13 @@ repositories {
         name = "Illusive Soulworks maven"
         url = "https://maven.theillusivec4.top/"
     }
+    maven {
+        // Shadows
+        url "https://maven.shadowsoffire.dev/releases"
+        content {
+            includeGroup "dev.shadowsoffire"
+        }
+    }
 }
 
 base {
@@ -138,6 +145,8 @@ dependencies {
     modCompileOnly(forge.bundles.jei)
     modImplementation(forge.emi)
     modRuntimeOnly(forge.jade)
+
+    modRuntimeOnly(forge.l2library)
 }
 
 //mixin {
