@@ -1,14 +1,11 @@
 package io.github.masyumero.zenlesscraftzero.common.item;
 
-import com.google.common.collect.Multimap;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscRank;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSet;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSetting;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -18,7 +15,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 public class DiscItem extends Item implements ICurioItem {
@@ -42,12 +38,14 @@ public class DiscItem extends Item implements ICurioItem {
 
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
-        discSet.getDiscBonuses().incrementDiscCount(stack);
+        discSet.getDiscBonuses().incrementDiscCount();
+        discSet.getDiscBonuses().onEquip(slotContext, prevStack, stack);
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        discSet.getDiscBonuses().decrementDiscCount(stack);
+        discSet.getDiscBonuses().decrementDiscCount();
+        discSet.getDiscBonuses().onUnequip(slotContext, newStack, stack);
     }
 
     @Override
@@ -55,11 +53,6 @@ public class DiscItem extends Item implements ICurioItem {
         if (slotContext.identifier().equals(discPartition.getId())) {
             discSet.getDiscBonuses().discTick(slotContext, stack);
         }
-    }
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        return discSet.getDiscBonuses().getAttributeModifiers(slotContext, uuid, stack);
     }
 
     @Override
