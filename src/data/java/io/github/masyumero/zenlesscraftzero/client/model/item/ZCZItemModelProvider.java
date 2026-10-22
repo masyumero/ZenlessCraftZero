@@ -19,5 +19,7 @@ public class ZCZItemModelProvider extends ItemModelProvider {
         ZCZItems.DISCS.forEach((setting, itemRO) -> {
             getBuilder(itemRO.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", ZCZUtil.rl("item/" + setting.set().getId()));
         });
+
+        basicItem(ZCZItems.ICON.get());
     }
 }

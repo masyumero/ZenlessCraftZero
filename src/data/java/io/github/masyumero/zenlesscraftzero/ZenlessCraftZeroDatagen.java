@@ -1,5 +1,7 @@
 package io.github.masyumero.zenlesscraftzero;
 
+import io.github.masyumero.zenlesscraftzero.client.lang.ZCZJapaneseLangProvider;
+import io.github.masyumero.zenlesscraftzero.client.lang.ZCZLangProvider;
 import io.github.masyumero.zenlesscraftzero.client.model.item.ZCZItemModelProvider;
 import io.github.masyumero.zenlesscraftzero.common.curios.ZCZCuriosProvider;
 import io.github.masyumero.zenlesscraftzero.common.tags.CuriosItemTagsProvider;
@@ -25,6 +27,8 @@ public class ZenlessCraftZeroDatagen {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         generator.addProvider(event.includeClient(), new ZCZItemModelProvider(output, existingFileHelper));
+        generator.addProvider(event.includeClient(), new ZCZLangProvider(output));
+        generator.addProvider(event.includeClient(), new ZCZJapaneseLangProvider(output));
 
         generator.addProvider(event.includeServer(), new ZCZCuriosProvider(output, existingFileHelper, lookupProvider));
         generator.addProvider(event.includeServer(), new ZCZItemTagsProvider(output, lookupProvider, existingFileHelper));

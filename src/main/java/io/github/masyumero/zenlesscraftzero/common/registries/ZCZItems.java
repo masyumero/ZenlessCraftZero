@@ -14,6 +14,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class ZCZItems {
 
@@ -31,8 +32,21 @@ public class ZCZItems {
         }
     }
 
+    public static final RegistryObject<Item> ICON = registerItem("icon", Item::new);
+    public static final RegistryObject<Item> MOLDED_PLATING_AGENT = registerItem("molded_plating_agent", Item::new);
+    public static final RegistryObject<Item> CRYSTALLIZED_PLATING_AGENT = registerItem("crystallized_plating_agent", Item::new);
+    public static final RegistryObject<Item> ETHER_PLATING_AGENT = registerItem("ether_plating_agent", Item::new);
+
     private static RegistryObject<Item> registerDisc(DiscSetting setting) {
         return ITEMS.register(setting.set().getId() + "_" + setting.partition().getSlotNumber() + "_" + setting.rank().getId(), () -> new DiscItem(setting));
+    }
+
+    private static RegistryObject<Item> registerItem(String name, Function<Item.Properties, Item> item) {
+        return ITEMS.register(name, () -> item.apply(new Item.Properties()));
+    }
+
+    public static RegistryObject<Item> getDisc(DiscSetting setting) {
+        return DISCS.get(setting);
     }
 
     public static void register(IEventBus bus) {
