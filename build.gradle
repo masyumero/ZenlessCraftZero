@@ -141,12 +141,14 @@ dependencies {
     modCompileOnly(variantOf(forge.curios) { classifier("api") })
     modRuntimeOnly(forge.curios)
 
+    modRuntimeOnly(forge.l2library)
+    modImplementation(forge.apothicAttributes)
+    modRuntimeOnly(forge.placebo)
+
     // JEI, EMI, Jade
     modCompileOnly(forge.bundles.jei)
     modImplementation(forge.emi)
     modRuntimeOnly(forge.jade)
-
-    modRuntimeOnly(forge.l2library)
 }
 
 //mixin {
