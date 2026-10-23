@@ -9,7 +9,7 @@ public class EquipmentLevel implements IEquipmentLevel {
     private final int maxXp;
     private int level;
     private int xp;
-    private int nextLevelUpXp;
+    private int requiredXp;
 
     public EquipmentLevel(int maxLevel, int maxXp) {
         this.maxLevel = maxLevel;

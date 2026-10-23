@@ -1,5 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.api.equip.disc.sets;
 
+import com.google.common.collect.Multimap;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,7 +11,6 @@ import net.minecraftforge.items.IItemHandler;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class DiscBonuses implements IDiscBonuses {
@@ -76,33 +76,29 @@ public abstract class DiscBonuses implements IDiscBonuses {
         }
     }
 
-    private void addAttribute(Map<AttributeInstance, AttributeModifier[]> modifiers) {
+    private void addAttribute(Multimap<AttributeInstance, AttributeModifier> modifiers) {
         if (!modifiers.isEmpty()) {
-            modifiers.forEach((instance, attributes) -> {
+            modifiers.forEach((instance, modifier) -> {
                 if (instance == null) {
                     return;
                 }
 
-                for (AttributeModifier attribute : attributes) {
-                    var current = instance.getModifier(attribute.getId());
-                    if (current == null || current.getAmount() != attribute.getAmount()) {
-                        if (current != null) {
-                            instance.removeModifier(attribute);
-                        }
-                        instance.addTransientModifier(attribute);
+                var current = instance.getModifier(modifier.getId());
+                if (current == null || current.getAmount() != modifier.getAmount()) {
+                    if (current != null) {
+                        instance.removeModifier(modifier);
                     }
+                    instance.addTransientModifier(modifier);
                 }
             });
         }
     }
 
-    private void removeAttribute(Map<AttributeInstance, AttributeModifier[]> modifiers) {
+    private void removeAttribute(Multimap<AttributeInstance, AttributeModifier> modifiers) {
         if (!modifiers.isEmpty()) {
-            modifiers.forEach((instance, attributes) -> {
-                for (AttributeModifier attribute : attributes) {
-                    if (instance != null && instance.getModifier(attribute.getId()) != null) {
-                        instance.removeModifier(attribute);
-                    }
+            modifiers.forEach((instance, modifier) -> {
+                if (instance != null && instance.getModifier(modifier.getId()) != null) {
+                    instance.removeModifier(modifier);
                 }
             });
         }

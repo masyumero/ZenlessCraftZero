@@ -17,9 +17,9 @@ public interface IEquipmentLevel {
 
     int getMaxXp();
 
-    int getNextLevelUpXp();
+    int getRequiredXp();
 
-    void setNextLevelUpXp(int xp);
+    void setRequiredXp(int xp);
 
     void setXp(int xp);
 

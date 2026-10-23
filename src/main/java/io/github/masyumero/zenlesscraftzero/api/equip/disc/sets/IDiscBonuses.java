@@ -1,5 +1,7 @@
 package io.github.masyumero.zenlesscraftzero.api.equip.disc.sets;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSet;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -8,9 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import top.theillusivec4.curios.api.SlotContext;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public interface IDiscBonuses {
 
@@ -30,12 +29,12 @@ public interface IDiscBonuses {
 
    default void fourPieceBonuses(SlotContext slotContext, ItemStack stack) {};
 
-   default Map<AttributeInstance, AttributeModifier[]> getTwoPieceModifiers(LivingEntity entity, ItemStack stack, String name) {
-      return new HashMap<>();
+   default Multimap<AttributeInstance, AttributeModifier> getTwoPieceModifiers(LivingEntity entity, ItemStack stack, String name) {
+      return HashMultimap.create();
    }
 
-   default Map<AttributeInstance, AttributeModifier[]> getFourPieceModifiers(LivingEntity entity, ItemStack stack, String name) {
-      return new HashMap<>();
+   default Multimap<AttributeInstance, AttributeModifier> getFourPieceModifiers(LivingEntity entity, ItemStack stack, String name) {
+      return HashMultimap.create();
    }
 
    default void onTwoPieceAttackEntity(AttackEntityEvent event, ItemStack stack, Player player) {}

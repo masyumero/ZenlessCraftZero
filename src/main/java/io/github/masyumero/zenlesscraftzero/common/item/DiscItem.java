@@ -55,12 +55,12 @@ public class DiscItem extends Item implements ICurioItem {
     }
 
     private void updateXpAndLevel(IEquipmentLevel equipLevel) {
-        if (equipLevel.getNextLevelUpXp() == 0) {
-            equipLevel.setNextLevelUpXp(discRank.getLevelUpXp(equipLevel.getLevel()));
+        if (equipLevel.getRequiredXp() == 0) {
+            equipLevel.setRequiredXp(discRank.getLevelUpXp(equipLevel.getLevel()));
         }
-        if (equipLevel.getNextLevelUpXp() != -1 && equipLevel.getXp() >= equipLevel.getNextLevelUpXp()) {
+        if (equipLevel.getRequiredXp() != -1 && equipLevel.getXp() >= equipLevel.getRequiredXp()) {
             equipLevel.incrementLevel();
-            equipLevel.setNextLevelUpXp(discRank.getLevelUpXp(equipLevel.getLevel()));
+            equipLevel.setRequiredXp(discRank.getLevelUpXp(equipLevel.getLevel()));
         }
     }
 
@@ -115,11 +115,11 @@ public class DiscItem extends Item implements ICurioItem {
         tooltipComponents.add(Component.translatable(ZCZLang.DISC_FOUR_PIECE_TOOLTIP.getTranslationKey()));
         tooltipComponents.add(Component.translatable(discSet.getFourPieceLang().getTranslationKey()));
         stack.getCapability(ZCZCapabilities.EQUIPMENT_LEVEL).ifPresent(equipLevel -> {
-            tooltipComponents.add(Component.literal("Level: " + equipLevel.getLevel()));
-            tooltipComponents.add(Component.literal("MaxLevel: " + equipLevel.getMaxLevel()));
-            tooltipComponents.add(Component.literal("Xp: " + equipLevel.getXp()));
-            tooltipComponents.add(Component.literal("MaxXp: " + equipLevel.getMaxXp()));
-            tooltipComponents.add(Component.literal("NextLevelUpXp: " + equipLevel.getNextLevelUpXp()));
+            tooltipComponents.add(Component.literal("Level: " + equipLevel.getLevel() + "/" + equipLevel.getMaxLevel()));
+            tooltipComponents.add(Component.literal("Xp: " + equipLevel.getXp() + "/" + equipLevel.getMaxXp()));
+            if (!(equipLevel.getRequiredXp() == -1)) {
+                tooltipComponents.add(Component.literal("RequiredXp: " + equipLevel.getRequiredXp()));
+            }
         });
     }
 

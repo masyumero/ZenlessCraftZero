@@ -1,5 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.common.equip.disc.sets;
 
+import com.google.common.collect.Multimap;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSet;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.DiscBonuses;
 import net.minecraft.util.Mth;
@@ -49,35 +50,31 @@ public class AstralVoiceSet extends DiscBonuses {
     }
 
     @Override
-    public Map<AttributeInstance, AttributeModifier[]> getTwoPieceModifiers(LivingEntity entity, ItemStack stack, String name) {
-        Map<AttributeInstance, AttributeModifier[]> modifier = super.getTwoPieceModifiers(entity, stack, name);
+    public Multimap<AttributeInstance, AttributeModifier> getTwoPieceModifiers(LivingEntity entity, ItemStack stack, String name) {
+        Multimap<AttributeInstance, AttributeModifier>  modifier = super.getTwoPieceModifiers(entity, stack, name);
         AttributeInstance attribute = entity.getAttribute(Attributes.ATTACK_DAMAGE);
-        modifier.put(attribute, new AttributeModifier[] {
-                new AttributeModifier(
-                        TWO_PIECE_ATTRIBUTE_UUID,
-                        name,
-                        0.1,
-                        AttributeModifier.Operation.MULTIPLY_BASE
-                )
-        });
+        modifier.put(attribute, new AttributeModifier(
+                TWO_PIECE_ATTRIBUTE_UUID,
+                name,
+                0.1,
+                AttributeModifier.Operation.MULTIPLY_BASE
+        ));
         return modifier;
     }
 
     @Override
-    public Map<AttributeInstance, AttributeModifier[]> getFourPieceModifiers(LivingEntity entity, ItemStack stack, String name) {
-        Map<AttributeInstance, AttributeModifier[]> modifier = super.getFourPieceModifiers(entity, stack, name);
-        List<AttributeModifier> modifiers = new ArrayList<>();
+    public Multimap<AttributeInstance, AttributeModifier> getFourPieceModifiers(LivingEntity entity, ItemStack stack, String name) {
+        Multimap<AttributeInstance, AttributeModifier>  modifier = super.getFourPieceModifiers(entity, stack, name);
         AABB box = entity.getBoundingBox().inflate(10.0);
         List<LivingEntity> entities = entity.level().getEntitiesOfClass(LivingEntity.class, box);
         entities.forEach(livingEntity -> {
                 AttributeInstance attribute = livingEntity.getAttribute(Attributes.ATTACK_DAMAGE);
-                modifiers.add(new AttributeModifier(
+                modifier.put(attribute, new AttributeModifier(
                         FOUR_PIECE_ATTRIBUTE_UUID,
                         name,
                         damageMultiplier * astral,
                         AttributeModifier.Operation.MULTIPLY_BASE
                 ));
-                modifier.put(attribute, modifiers.toArray(new AttributeModifier[0]));
             });
         return modifier;
     }
