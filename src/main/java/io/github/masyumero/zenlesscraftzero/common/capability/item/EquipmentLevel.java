@@ -1,6 +1,7 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.item;
 
 import lombok.Data;
+import net.minecraft.nbt.CompoundTag;
 
 @Data
 public class EquipmentLevel implements IEquipmentLevel {
@@ -34,5 +35,21 @@ public class EquipmentLevel implements IEquipmentLevel {
         }
 
         return accepted;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("level", this.getLevel());
+        tag.putInt("xp", this.getXp());
+        tag.putInt("next_level_up_xp", this.getRequiredXp());
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag compoundTag) {
+        this.setLevel(compoundTag.getInt("level"));
+        this.setXp(compoundTag.getInt("xp"));
+        this.setRequiredXp(compoundTag.getInt("next_level_up_xp"));
     }
 }

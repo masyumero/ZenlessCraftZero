@@ -1,6 +1,7 @@
 package io.github.masyumero.zenlesscraftzero;
 
 import com.mojang.logging.LogUtils;
+import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscLevelStat;
 import io.github.masyumero.zenlesscraftzero.common.ZCZTags;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZItems;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZTabs;
@@ -26,5 +27,6 @@ public class ZenlessCraftZero {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(ZCZTags::init);
+        event.enqueueWork(DiscLevelStat::init);
     }
 }

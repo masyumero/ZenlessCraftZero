@@ -1,5 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.item;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
 @AutoRegisterCapability
@@ -24,4 +25,8 @@ public interface IEquipmentLevel {
     void setXp(int xp);
 
     int addXp(int amount, boolean simulate);
+
+    CompoundTag serializeNBT();
+
+    void deserializeNBT(CompoundTag compoundTag);
 }

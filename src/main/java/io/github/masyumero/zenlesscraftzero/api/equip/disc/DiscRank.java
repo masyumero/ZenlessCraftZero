@@ -5,21 +5,23 @@ import lombok.Getter;
 
 @Getter
 public enum DiscRank {
-    RANK_B("rank_b", Rank.RANK_B, 9, 8000, new int[] {240, 360, 600, 720, 840, 1080, 1200, 1320, 1640}),
-    RANK_A("rank_a", Rank.RANK_A, 12, 24000, new int[] {400, 600, 1010, 1210, 1410, 1810, 2020, 2220, 2620, 3020, 3430, 4250}),
-    RANK_S("rank_s", Rank.RANK_S, 15, 48000, new int[] {480, 720, 1200, 1440, 1680, 2160, 2400, 2640, 3120, 3600, 4080, 5040, 5760, 6480, 7200});
+    RANK_B("rank_b", Rank.RANK_B, 9, 8000, 2, new int[] {240, 360, 600, 720, 840, 1080, 1200, 1320, 1640}),
+    RANK_A("rank_a", Rank.RANK_A, 12, 24000, 4, new int[] {400, 600, 1010, 1210, 1410, 1810, 2020, 2220, 2620, 3020, 3430, 4250}),
+    RANK_S("rank_s", Rank.RANK_S, 15, 48000, 6, new int[] {480, 720, 1200, 1440, 1680, 2160, 2400, 2640, 3120, 3600, 4080, 5040, 5760, 6480, 7200});
 
     private final String id;
     private final Rank rank;
     private final int maxLevel;
     private final int maxXp;
+    private final int subStatFixedValue;
     private final int[] levelUpXp;
 
-    DiscRank(String id, Rank rank, int maxLevel, int maxXp, int[] levelUpXp) {
+    DiscRank(String id, Rank rank, int maxLevel, int maxXp, int subStatFixedValue, int[] levelUpXp) {
         this.id = id;
         this.rank = rank;
         this.maxLevel = maxLevel;
         this.maxXp = maxXp;
+        this.subStatFixedValue = subStatFixedValue;
         this.levelUpXp = levelUpXp;
     }
 

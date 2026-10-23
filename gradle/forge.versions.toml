@@ -12,6 +12,7 @@ jade = "5390389" # 11.9.3
 l2library = "9142545" # 2.5.5
 placebo = "1.20.1-8.6.3"
 apothicAttributes = "1.20.1-1.3.7"
+attributeFix = "7612291" # 21.0.5
 
 [libraries]
 mixinExtras-common      = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }
@@ -29,6 +30,7 @@ jade                    = { module = "curse.maven:jade-324717", version.ref = "j
 l2library               = { module = "curse.maven:l2library-620203", version.ref = "l2library" }
 placebo                 = { module = "dev.shadowsoffire:Placebo", version.ref = "placebo"}
 apothicAttributes       = { module = "dev.shadowsoffire:ApothicAttributes", version.ref = "apothicAttributes"}
+attributeFix            = { module = "curse.maven:attributefix-280510", version.ref = "attributeFix"}
 
 [bundles]
 jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]

@@ -30,17 +30,11 @@ public class EquipmentLevelProvider implements ICapabilitySerializable<CompoundT
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.putInt("level", equipmentLevel.getLevel());
-        tag.putInt("xp", equipmentLevel.getXp());
-        tag.putInt("next_level_up_xp", equipmentLevel.getRequiredXp());
-        return tag;
+        return equipmentLevel.serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
-        equipmentLevel.setLevel(compoundTag.getInt("level"));
-        equipmentLevel.setXp(compoundTag.getInt("xp"));
-        equipmentLevel.setRequiredXp(compoundTag.getInt("next_level_up_xp"));
+    public void deserializeNBT(CompoundTag tag) {
+        equipmentLevel.deserializeNBT(tag);
     }
 }

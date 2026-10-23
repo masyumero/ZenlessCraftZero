@@ -144,6 +144,7 @@ dependencies {
     modRuntimeOnly(forge.l2library)
     modImplementation(forge.apothicAttributes)
     modRuntimeOnly(forge.placebo)
+    modRuntimeOnly(forge.attributeFix)
 
     // JEI, EMI, Jade
     modCompileOnly(forge.bundles.jei)
