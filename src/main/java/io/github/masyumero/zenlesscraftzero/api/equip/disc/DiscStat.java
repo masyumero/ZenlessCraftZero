@@ -20,9 +20,16 @@ public enum DiscStat {
     ATK_RATIO("atk_ratio", ZCZLang.DISC_STAT_ATK_RATIO, Attributes.ATTACK_DAMAGE, AttributeModifier.Operation.MULTIPLY_BASE, true, DiscPartition.PARTITION_4, DiscPartition.PARTITION_5, DiscPartition.PARTITION_6),
     DEF_RATIO("def_ratio", ZCZLang.DISC_STAT_DEF_RATIO, Attributes.ARMOR, AttributeModifier.Operation.MULTIPLY_BASE, true, DiscPartition.PARTITION_4, DiscPartition.PARTITION_5, DiscPartition.PARTITION_6),
     CRIT_CHANCE("crit_rate", ZCZLang.DISC_STAT_CRIT_CHANCE, ALObjects.Attributes.CRIT_CHANCE, AttributeModifier.Operation.ADDITION, true, DiscPartition.PARTITION_4),
-    CRIT_DAMAGE("crit_rate", ZCZLang.DISC_STAT_CRIT_DAMAGE, ALObjects.Attributes.CRIT_DAMAGE, AttributeModifier.Operation.ADDITION, true, DiscPartition.PARTITION_4),
-    //ANOMALY_PROFICIENCY("anomaly_proficiency", ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, , AttributeModifier.Operation.ADDITION, false, DiscPartition.PARTITION_6),
-    PEN_RATIO("pen_ratio", ZCZLang.DISC_STAT_PEN_RATIO, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6);
+    CRIT_DAMAGE("crit_damage", ZCZLang.DISC_STAT_CRIT_DAMAGE, ALObjects.Attributes.CRIT_DAMAGE, AttributeModifier.Operation.ADDITION, true, DiscPartition.PARTITION_4),
+    //ANOMALY_PROFICIENCY("anomaly_proficiency", ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6),
+    PEN_RATIO("pen_ratio", ZCZLang.DISC_STAT_PEN_RATIO, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6),
+    PEN("pen", ZCZLang.DISC_STAT_PEN, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.ADDITION, true)
+    //ATTRIBUTE_DMG_BONUS("attribute_dmg_bonus", ZCZLang.DISC_STAT_ATTRIBUTE_DMG_BONUS, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_5),
+    //ANOMALY_MASTERY_RATIO("anomaly_mastery_ratio", ZCZLang.DISC_STAT_ANOMALY_MASTERY_RATIO, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_4),
+    //ANOMALY_MASTERY("anomaly_mastery", ZCZLang.DISC_STAT_ANOMALY_MASTERY, , AttributeModifier.Operation.ADDITION, true),
+    //IMPACT("impact", ZCZLang.DISC_STAT_IMPACT, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6)
+    //ENERGY_REGEN("energy_regen", ZCZLang.DISC_STAT_ENERGY_REGEN, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6)
+    ;
 
     private final String id;
     private final ILangEntry translate;
@@ -40,8 +47,10 @@ public enum DiscStat {
         this.operation = operation;
         this.isSubStat = isSubStat;
         this.partitions = partitions;
-        for (DiscPartition partition : partitions) {
-            uuid.put(partition, UUID.randomUUID());
+        if (partitions != null) {
+            for (DiscPartition partition : partitions) {
+                uuid.put(partition, UUID.randomUUID());
+            }
         }
         if (isSubStat) {
             for (DiscPartition partition : DiscPartition.values()) {
@@ -55,10 +64,16 @@ public enum DiscStat {
     }
 
     public UUID getPartitionUUID(DiscPartition partition) {
+        if (!uuid.containsKey(partition)) {
+            return null;
+        }
         return uuid.get(partition);
     }
 
     public UUID getPartitionSubUUID(DiscPartition partition) {
+        if (!subUuid.containsKey(partition)) {
+            return null;
+        }
         return subUuid.get(partition);
     }
 

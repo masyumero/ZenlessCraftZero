@@ -42,6 +42,7 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZLang.DISC_STAT_CRIT_DAMAGE, "CRIT DMG %s %s%%", "会心ダメージ %s %s%%");
         addENJP(ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, "Anomaly Proficiency %s %s%%", "異常掌握 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PEN_RATIO, "PEN Ratio %s %s%%", "貫通率 %s %s%%");
+        addENJP(ZCZLang.DISC_STAT_PEN, "PEN %s %s%%", "貫通値 %s %s%%");
 
         addENJP(ZCZItems.MOLDED_PLATING_AGENT.get(), "Molded Plating Agent", "可塑化助剤");
         addENJP(ZCZItems.CRYSTALLIZED_PLATING_AGENT.get(), "Crystallized Plating Agent", "結晶化助剤");

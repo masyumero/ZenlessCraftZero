@@ -32,6 +32,8 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -79,15 +81,22 @@ public class DiscItem extends Item implements ICurioItem {
             return;
         }
         Multimap<AttributeInstance, AttributeModifier> modifiers = HashMultimap.create();
-        if (stats.getMainStat() != null) {
-            AttributeInstance instance = entity.getAttribute(stats.getMainStat().getAttribute());
-            double[] statValues = DiscLevelStat.getStat(discRank, stats.getMainStat());
+        DiscStat mainStat = stats.getMainStat();
+        if (mainStat != null) {
+            AttributeInstance instance = entity.getAttribute(mainStat.getAttribute());
+            double[] statValues = DiscLevelStat.getStat(discRank, mainStat);
             if (instance != null && statValues.length != 0) {
+                String name = "main_stat";
+                double statValue = statValues[stats.getEquipLevel().getLevel()];
+                if (mainStat.getOperation().equals(AttributeModifier.Operation.MULTIPLY_BASE)) {
+                    statValue = instance.getBaseValue() * (1 + statValue);
+                    name += "_ratio";
+                }
                 AttributeModifier modifier = new AttributeModifier(
-                        stats.getMainStat().getPartitionUUID(discPartition),
-                        "main_stat",
-                        statValues[stats.getEquipLevel().getLevel()],
-                        stats.getMainStat().getOperation());
+                        mainStat.getPartitionUUID(discPartition),
+                        name,
+                        statValue,
+                        AttributeModifier.Operation.ADDITION);
                 modifiers.put(instance, modifier);
             }
         }
@@ -95,13 +104,18 @@ public class DiscItem extends Item implements ICurioItem {
             Map<DiscStat, Integer> subStats = stats.getSubStats();
             subStats.forEach((discStat, integer) -> {
                 AttributeInstance instance = entity.getAttribute(discStat.getAttribute());
-                double statValues = DiscLevelStat.getSubStatBaseValue(discRank, discStat) * (1 + integer);
                 if (instance != null) {
+                    double statValue = DiscLevelStat.getSubStatBaseValue(discRank, discStat) * (1 + integer);
+                    String name = "sub_stat";
+                    if (discStat.getOperation().equals(AttributeModifier.Operation.MULTIPLY_BASE)) {
+                        statValue = instance.getBaseValue() * (1 + statValue);
+                        name += "_ratio";
+                    }
                     AttributeModifier modifier = new AttributeModifier(
                             discStat.getPartitionSubUUID(discPartition),
-                            "sub_stat",
-                            statValues,
-                            discStat.getOperation());
+                            name,
+                            statValue,
+                            AttributeModifier.Operation.ADDITION);
                     modifiers.put(instance, modifier);
                 }
             });
@@ -282,9 +296,17 @@ public class DiscItem extends Item implements ICurioItem {
         stack.getCapability(ZCZCapabilities.STATS).ifPresent(stats -> {
             tooltipComponents.add(Component.translatable(ZCZLang.DISC_STAT_MAIN.getTranslationKey()));
             var mainStat = stats.getMainStat();
-            double[] statValues = DiscLevelStat.getStat(discRank, mainStat);
-            if (mainStat != null) {
-                tooltipComponents.add(Component.translatable(mainStat.getTranslate().getTranslationKey(), "", statValues.length != 0 ? statValues[stats.getEquipLevel().getLevel()] : 0));
+            List<BigDecimal> statValues = new ArrayList<>();
+            for (double d : DiscLevelStat.getStat(discRank, mainStat)) {
+                statValues.add(BigDecimal.valueOf(d));
+            }
+            if (mainStat != null && !statValues.isEmpty()) {
+                BigDecimal statValue = statValues.get(stats.getEquipLevel().getLevel());
+                if (statValue.compareTo(BigDecimal.ONE) < 0) {
+                    tooltipComponents.add(Component.translatable(mainStat.getTranslate().getTranslationKey(), "", statValue.multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()));
+                } else {
+                    tooltipComponents.add(Component.translatable(mainStat.getTranslate().getTranslationKey(), "", statValue.stripTrailingZeros().toPlainString()));
+                }
             } else {
                 tooltipComponents.add(Component.translatable(ZCZLang.DISC_STAT_EMPTY.getTranslationKey()));
             }
@@ -292,11 +314,11 @@ public class DiscItem extends Item implements ICurioItem {
             var subStats = stats.getSubStats();
             if (!subStats.isEmpty()) {
                 subStats.forEach((discStat, integer) -> {
-                    double subStatValue = DiscLevelStat.getSubStatBaseValue(discRank, discStat) * (1 + integer);
-                    if (subStatValue < 1.0) {
-                        tooltipComponents.add(Component.translatable(discStat.getTranslate().getTranslationKey(), integer == 0 ? " " : "+" + integer, subStatValue * 100));
+                    BigDecimal subStatValue = BigDecimal.valueOf(DiscLevelStat.getSubStatBaseValue(discRank, discStat) * (1 + integer));
+                    if (subStatValue.compareTo(BigDecimal.ONE) < 0) {
+                        tooltipComponents.add(Component.translatable(discStat.getTranslate().getTranslationKey(), "[+" + integer + "]", subStatValue.multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()));
                     } else {
-                        tooltipComponents.add(Component.translatable(discStat.getTranslate().getTranslationKey(), integer == 0 ? " " : "+" + integer, subStatValue));
+                        tooltipComponents.add(Component.translatable(discStat.getTranslate().getTranslationKey(), "[+" + integer + "]", subStatValue.stripTrailingZeros().toPlainString()));
                     }
                 });
                 for (int i = 0; i < 4 - subStats.size(); i++) {
