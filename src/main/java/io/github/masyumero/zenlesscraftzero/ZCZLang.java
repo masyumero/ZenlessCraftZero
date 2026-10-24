@@ -25,7 +25,9 @@ public enum ZCZLang implements ILangEntry {
     DISC_STAT_PEN("disc", "stat_pen"),
 
     ASTRAL_VOICE_TWO_PIECE_TOOLTIP("disc", "astral_voice_two_piece_tooltip"),
-    ASTRAL_VOICE_FOUR_PIECE_TOOLTIP("disc", "astral_voice_four_piece_tooltip");
+    ASTRAL_VOICE_FOUR_PIECE_TOOLTIP("disc", "astral_voice_four_piece_tooltip"),
+
+    ;
 
     private final String key;
 

@@ -1,5 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.common.capability;
 
+import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.capability.item.IEquipmentLevel;
 import io.github.masyumero.zenlesscraftzero.common.capability.item.disc.IStats;
 import net.minecraftforge.common.capabilities.Capability;
@@ -10,5 +11,6 @@ public class ZCZCapabilities {
 
     public static final Capability<IEquipmentLevel> EQUIPMENT_LEVEL = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IStats> STATS = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IAttributeAnomaly> ATTRIBUTE_ANOMALY = CapabilityManager.get(new CapabilityToken<>() {});
 
 }
