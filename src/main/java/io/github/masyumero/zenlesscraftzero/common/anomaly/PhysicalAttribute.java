@@ -5,7 +5,7 @@ import com.google.common.collect.Table;
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.Attribute;
-import io.github.masyumero.zenlesscraftzero.api.anomaly.AttributeEffect;
+import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
 import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
@@ -17,7 +17,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.UUID;
 
-public class PhysicalAttribute extends AttributeEffect {
+public class PhysicalAttribute implements IAttributeEffect {
 
     @Override
     public void onAnomalyEffect(LivingEntity attacker, LivingEntity anomalyTarget) {
