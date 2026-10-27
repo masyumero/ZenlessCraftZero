@@ -63,7 +63,7 @@ legacyForge {
         minecraftVersion = libs.versions.minecraft.get()
     }
 
-    // accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+    //accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
@@ -134,7 +134,7 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 
     // Mixin
-    //annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
+    annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
     //api(annotationProcessor(forge.mixinExtras.common.get()))
 
     // Curios
@@ -152,16 +152,16 @@ dependencies {
     modRuntimeOnly(forge.jade)
 }
 
-//mixin {
-//    add sourceSets.main, "${mod_id}.refmap.json"
-//    config "${mod_id}.mixins.json"
-//}
-//
-//jar {
-//    manifest.attributes([
-//            "MixinConfigs": "${mod_id}.mixins.json"
-//    ])
-//}
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
+}
+
+jar {
+    manifest.attributes([
+            "MixinConfigs": "${mod_id}.mixins.json"
+    ])
+}
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.

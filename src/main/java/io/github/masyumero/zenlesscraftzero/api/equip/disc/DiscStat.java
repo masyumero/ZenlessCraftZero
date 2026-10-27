@@ -3,6 +3,7 @@ package io.github.masyumero.zenlesscraftzero.api.equip.disc;
 import dev.shadowsoffire.attributeslib.api.ALObjects;
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
+import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import lombok.Getter;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -21,12 +22,11 @@ public enum DiscStat {
     DEF_RATIO("def_ratio", ZCZLang.DISC_STAT_DEF_RATIO, Attributes.ARMOR, AttributeModifier.Operation.MULTIPLY_BASE, true, DiscPartition.PARTITION_4, DiscPartition.PARTITION_5, DiscPartition.PARTITION_6),
     CRIT_CHANCE("crit_rate", ZCZLang.DISC_STAT_CRIT_CHANCE, ALObjects.Attributes.CRIT_CHANCE, AttributeModifier.Operation.ADDITION, true, DiscPartition.PARTITION_4),
     CRIT_DAMAGE("crit_damage", ZCZLang.DISC_STAT_CRIT_DAMAGE, ALObjects.Attributes.CRIT_DAMAGE, AttributeModifier.Operation.ADDITION, true, DiscPartition.PARTITION_4),
-    //ANOMALY_PROFICIENCY("anomaly_proficiency", ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6),
+    ANOMALY_PROFICIENCY("anomaly_proficiency", ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, ZCZAttributes.ANOMALY_PROFICIENCY, AttributeModifier.Operation.ADDITION, true, DiscPartition.PARTITION_4),
     PEN_RATIO("pen_ratio", ZCZLang.DISC_STAT_PEN_RATIO, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6),
     PEN("pen", ZCZLang.DISC_STAT_PEN, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.ADDITION, true)
     //ATTRIBUTE_DMG_BONUS("attribute_dmg_bonus", ZCZLang.DISC_STAT_ATTRIBUTE_DMG_BONUS, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_5),
-    //ANOMALY_MASTERY_RATIO("anomaly_mastery_ratio", ZCZLang.DISC_STAT_ANOMALY_MASTERY_RATIO, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_4),
-    //ANOMALY_MASTERY("anomaly_mastery", ZCZLang.DISC_STAT_ANOMALY_MASTERY, , AttributeModifier.Operation.ADDITION, true),
+    //ANOMALY_MASTERY("anomaly_mastery", ZCZLang.DISC_STAT_ANOMALY_MASTERY, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6),
     //IMPACT("impact", ZCZLang.DISC_STAT_IMPACT, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6)
     //ENERGY_REGEN("energy_regen", ZCZLang.DISC_STAT_ENERGY_REGEN, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6)
     ;

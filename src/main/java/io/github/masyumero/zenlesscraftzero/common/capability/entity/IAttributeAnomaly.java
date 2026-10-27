@@ -1,20 +1,31 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.entity;
 
-import io.github.masyumero.zenlesscraftzero.api.attribute.Attribute;
+import com.google.common.collect.Table;
+import io.github.masyumero.zenlesscraftzero.api.anomaly.Attribute;
+import net.minecraft.nbt.CompoundTag;
+
+import java.util.Map;
+import java.util.UUID;
 
 public interface IAttributeAnomaly {
 
-    Attribute getAttribute();
+    Map<UUID, Attribute> getAttribute();
 
-    void setAttribute(Attribute attribute);
+    void setAttribute(Map<UUID, Attribute> attributes);
 
-    int getAnomalyBuildup();
+    void addAttribute(UUID uuid, Attribute attribute);
 
-    void setAnomalyBuildup(int value);
+    Table<UUID, Attribute, Integer> getAnomalyBuildup();
 
-    void addAnomalyBuildup(int value);
+    void setAnomalyBuildup(Table<UUID, Attribute, Integer> buildup);
+
+    void addAnomalyBuildup(UUID uuid, Attribute attribute, int buildup);
 
     int getAnomalyLimit();
 
-    void setAnomalyLimit(int value);
+    void setAnomalyLimit(int limit);
+
+    CompoundTag serializeNBT();
+
+    void deserializeNBT(CompoundTag tag);
 }

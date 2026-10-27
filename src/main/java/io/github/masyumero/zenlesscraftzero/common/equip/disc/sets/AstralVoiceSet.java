@@ -14,9 +14,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class AstralVoiceSet extends DiscBonuses {

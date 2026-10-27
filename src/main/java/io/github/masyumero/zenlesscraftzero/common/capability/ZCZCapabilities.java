@@ -12,5 +12,4 @@ public class ZCZCapabilities {
     public static final Capability<IEquipmentLevel> EQUIPMENT_LEVEL = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IStats> STATS = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IAttributeAnomaly> ATTRIBUTE_ANOMALY = CapabilityManager.get(new CapabilityToken<>() {});
-
 }

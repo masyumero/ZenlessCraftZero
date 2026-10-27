@@ -24,9 +24,15 @@ public enum ZCZLang implements ILangEntry {
     DISC_STAT_PEN_RATIO("disc", "stat_pen_ratio"),
     DISC_STAT_PEN("disc", "stat_pen"),
 
+    ATTRIBUTE_ANOMALY_PROFICIENCY("description", "attribute.anomaly_proficiency"),
+
+    ANOMALY_EFFECT_PHYSICAL("anomaly_effect", "physical"),
+
     ASTRAL_VOICE_TWO_PIECE_TOOLTIP("disc", "astral_voice_two_piece_tooltip"),
     ASTRAL_VOICE_FOUR_PIECE_TOOLTIP("disc", "astral_voice_four_piece_tooltip"),
 
+    FREEDOM_BLUES_TWO_PIECE_TOOLTIP("disc", "freedokm_blues_two_piece_tooltip"),
+    FREEDOM_BLUES_FOUR_PIECE_TOOLTIP("disc", "freedokm_blues_four_piece_tooltip"),
     ;
 
     private final String key;

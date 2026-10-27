@@ -4,11 +4,13 @@ import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.DiscBonuses;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
 import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.AstralVoiceSet;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.FreedomBluesSet;
 import lombok.Getter;
 
 @Getter
 public enum DiscSet {
-    ASTRAL_VOICE("astral_voice", new AstralVoiceSet(), ZCZLang.ASTRAL_VOICE_TWO_PIECE_TOOLTIP, ZCZLang.ASTRAL_VOICE_FOUR_PIECE_TOOLTIP);
+    ASTRAL_VOICE("astral_voice", new AstralVoiceSet(), ZCZLang.ASTRAL_VOICE_TWO_PIECE_TOOLTIP, ZCZLang.ASTRAL_VOICE_FOUR_PIECE_TOOLTIP),
+    FREEDOM_BLUES("freedom_blues", new FreedomBluesSet(), ZCZLang.FREEDOM_BLUES_TWO_PIECE_TOOLTIP, ZCZLang.FREEDOM_BLUES_FOUR_PIECE_TOOLTIP);
 
     private final String id;
     private final DiscBonuses discBonuses;

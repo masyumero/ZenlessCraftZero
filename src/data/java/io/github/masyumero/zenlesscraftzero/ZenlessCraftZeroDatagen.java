@@ -4,6 +4,8 @@ import io.github.masyumero.zenlesscraftzero.client.lang.ZCZJapaneseLangProvider;
 import io.github.masyumero.zenlesscraftzero.client.lang.ZCZLangProvider;
 import io.github.masyumero.zenlesscraftzero.client.model.item.ZCZItemModelProvider;
 import io.github.masyumero.zenlesscraftzero.common.curios.ZCZCuriosProvider;
+import io.github.masyumero.zenlesscraftzero.common.damagetype.ZCZDamageTypeProvider;
+import io.github.masyumero.zenlesscraftzero.common.damagetype.ZCZDamageTypeTagsProvider;
 import io.github.masyumero.zenlesscraftzero.common.tags.CuriosItemTagsProvider;
 import io.github.masyumero.zenlesscraftzero.common.tags.ZCZItemTagsProvider;
 import net.minecraft.core.HolderLookup;
@@ -33,5 +35,7 @@ public class ZenlessCraftZeroDatagen {
         generator.addProvider(event.includeServer(), new ZCZCuriosProvider(output, existingFileHelper, lookupProvider));
         generator.addProvider(event.includeServer(), new ZCZItemTagsProvider(output, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new CuriosItemTagsProvider(output, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new ZCZDamageTypeProvider(output, lookupProvider));
+        generator.addProvider(event.includeServer(), new ZCZDamageTypeTagsProvider(output, lookupProvider, existingFileHelper));
     }
 }

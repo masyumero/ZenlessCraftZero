@@ -28,6 +28,10 @@ public class ZCZLangProvider extends BaseLangProvider {
 
         addENJP(ZCZLang.ASTRAL_VOICE_TWO_PIECE_TOOLTIP, "ATK +10%", "攻撃力+10%。");
         addENJP(ZCZLang.ASTRAL_VOICE_FOUR_PIECE_TOOLTIP, "Whenever the character attacks an enemy, all nearby players gain 1 stack of Astral, up to a maximum of 3 stacks, and lasting 15s. Repeated triggers reset the duration. Each stack of Astral increases the DMG dealt by nearby players by 8%. Passive effects of the same name do not stack.", "敵を攻撃したとき、付近のプレイヤー全員が「天籟」を1重獲得する。最大3重まで重ね掛け可能、継続時間15秒、重複して発動すると継続時間が更新される。「天籟」1重につき、付近のプレイヤーの与ダメージ+8%、同じパッシブ効果は重ね掛け不可。");
+        addENJP(ZCZLang.FREEDOM_BLUES_TWO_PIECE_TOOLTIP, "Anomaly Proficiency +30", "異常マスタリー+30Pt。");
+        addENJP(ZCZLang.FREEDOM_BLUES_FOUR_PIECE_TOOLTIP, "When an EX Special Attack hits an enemy, reduce the target's Anomaly Buildup RES to the equipper's Attribute by 20% for 8s. This effect does not stack with others of the same attribute.", "『強化特殊スキル』が敵に命中すると、装備者の属性に応じてターゲットの対応する状態異常蓄積耐性-20%、継続時間8秒。同属性での重ね掛けは不可。");
+
+        addENJP(ZCZLang.ATTRIBUTE_ANOMALY_PROFICIENCY, "Anomaly Proficiency", "異常マスタリー");
 
         addENJP(ZCZLang.DISC_STAT_MAIN, "Main Stat: ", "メインステータス: ");
         addENJP(ZCZLang.DISC_STAT_SUB, "Sub-Stats: ", "サブステータス: ");
@@ -40,7 +44,7 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZLang.DISC_STAT_DEF_RATIO, "DEF %s %s%%", "防御力 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_CRIT_CHANCE, "CRIT Rate %s %s%%", "会心率 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_CRIT_DAMAGE, "CRIT DMG %s %s%%", "会心ダメージ %s %s%%");
-        addENJP(ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, "Anomaly Proficiency %s %s%%", "異常掌握 %s %s%%");
+        addENJP(ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, "Anomaly Proficiency %s %s%%", "異常マスタリー %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PEN_RATIO, "PEN Ratio %s %s%%", "貫通率 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PEN, "PEN %s %s%%", "貫通値 %s %s%%");
 
@@ -48,7 +52,10 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZItems.CRYSTALLIZED_PLATING_AGENT.get(), "Crystallized Plating Agent", "結晶化助剤");
         addENJP(ZCZItems.ETHER_PLATING_AGENT.get(), "Ether Plating Agent", "エーテル助剤");
 
+        addENJP(ZCZLang.ANOMALY_EFFECT_PHYSICAL, "Assault!!", "強撃!!");
+
         addDisc(DiscSet.ASTRAL_VOICE, "Astral Voice", "静寂のアストラ");
+        addDisc(DiscSet.FREEDOM_BLUES, "Freedom Blues", "フリーダム・ブルース");
 
         ENJP.forEach((key, enjp) -> this.add(key, enjp.en()));
     }

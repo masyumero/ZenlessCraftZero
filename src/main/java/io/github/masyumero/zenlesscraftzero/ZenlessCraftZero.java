@@ -3,8 +3,13 @@ package io.github.masyumero.zenlesscraftzero;
 import com.mojang.logging.LogUtils;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscLevelStat;
 import io.github.masyumero.zenlesscraftzero.common.ZCZTags;
+import io.github.masyumero.zenlesscraftzero.common.network.s2c.DamageIndicatorNetwork;
+import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZItems;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZTabs;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -21,12 +26,23 @@ public class ZenlessCraftZero {
         IEventBus modEventBus = context.getModEventBus();
 
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::onEntityAttributeModification);
         ZCZItems.register(modEventBus);
+        ZCZAttributes.register(modEventBus);
         ZCZTabs.register(modEventBus);
+        DamageIndicatorNetwork.register();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(ZCZTags::init);
         event.enqueueWork(DiscLevelStat::init);
+    }
+
+    public void onEntityAttributeModification(EntityAttributeModificationEvent event) {
+        for (EntityType<? extends LivingEntity> type : event.getTypes()) {
+            if (!event.has(type, ZCZAttributes.ANOMALY_PROFICIENCY.get())) {
+                event.add(type, ZCZAttributes.ANOMALY_PROFICIENCY.get());
+            }
+        }
     }
 }

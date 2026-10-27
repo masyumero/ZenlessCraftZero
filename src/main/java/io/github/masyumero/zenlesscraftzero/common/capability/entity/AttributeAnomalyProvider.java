@@ -1,6 +1,5 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.entity;
 
-import io.github.masyumero.zenlesscraftzero.api.attribute.Attribute;
 import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -15,13 +14,9 @@ public class AttributeAnomalyProvider implements ICapabilitySerializable<Compoun
     private final AttributeAnomaly attributeAnomaly;
     private final LazyOptional<IAttributeAnomaly> optional;
 
-    public AttributeAnomalyProvider(CompoundTag tag) {
+    public AttributeAnomalyProvider() {
         this.attributeAnomaly = new AttributeAnomaly();
         this.optional = LazyOptional.of(() -> attributeAnomaly);
-
-        if (tag != null) {
-            deserializeNBT(tag);
-        }
     }
 
     @Override
@@ -31,17 +26,15 @@ public class AttributeAnomalyProvider implements ICapabilitySerializable<Compoun
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.putString("attribute", attributeAnomaly.getAttribute().getId());
-        tag.putInt("anomaly_buildup", attributeAnomaly.getAnomalyBuildup());
-        tag.putInt("anomaly_limit", attributeAnomaly.getAnomalyLimit());
-        return tag;
+        return attributeAnomaly.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        attributeAnomaly.setAttribute(Attribute.getFromId(tag.getString("attribute")));
-        attributeAnomaly.setAnomalyBuildup(tag.getInt("anomaly_buildup"));
-        attributeAnomaly.setAnomalyLimit(tag.getInt("anomaly_limit"));
+        attributeAnomaly.deserializeNBT(tag);
+    }
+
+    public void invalidate() {
+        optional.invalidate();
     }
 }

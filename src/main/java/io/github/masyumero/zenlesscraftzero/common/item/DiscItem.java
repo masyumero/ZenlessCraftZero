@@ -34,7 +34,10 @@ import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.Predicate;
 
 @Getter
@@ -229,6 +232,9 @@ public class DiscItem extends Item implements ICurioItem {
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         discSet.getDiscBonuses().onUnequip(slotContext, newStack, stack);
+        stack.getCapability(ZCZCapabilities.STATS).ifPresent(stats -> {
+            this.updateStatsAttribute(stats, stack, slotContext.entity(), stack1 -> true);
+        });
     }
 
     @Override
@@ -243,6 +249,7 @@ public class DiscItem extends Item implements ICurioItem {
         if (level.isClientSide() || !(entity instanceof LivingEntity livingEntity)) {
             return;
         }
+
         stack.getCapability(ZCZCapabilities.EQUIPMENT_LEVEL).ifPresent(this::updateXpAndLevel);
         stack.getCapability(ZCZCapabilities.STATS).ifPresent(stats -> {
             this.updateStats(stats);
