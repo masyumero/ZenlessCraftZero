@@ -1,7 +1,8 @@
-package io.github.masyumero.zenlesscraftzero.api.equip.disc.sets;
+package io.github.masyumero.zenlesscraftzero.common.equip.disc.sets;
 
 import com.google.common.collect.Multimap;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
+import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.IDiscBonuses;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;

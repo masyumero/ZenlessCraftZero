@@ -1,7 +1,8 @@
-package io.github.masyumero.zenlesscraftzero.api.equip.disc;
+package io.github.masyumero.zenlesscraftzero.common.equip.disc;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscRank;
 
 public class DiscLevelStat {
     private static final Table<DiscRank, DiscStat, double[]> STAT = HashBasedTable.create();
@@ -23,9 +24,9 @@ public class DiscLevelStat {
         STAT.put(DiscRank.RANK_S, DiscStat.HP_RATIO, new double[]{0.075, 0.09, 0.105, 0.12, 0.135, 0.15, 0.165, 0.18, 0.195, 0.21, 0.225, 0.24, 0.255, 0.27, 0.285, 0.30});
         STAT.put(DiscRank.RANK_A, DiscStat.HP_RATIO, new double[]{0.05, 0.0625, 0.075, 0.0875, 0.10, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.20});
         STAT.put(DiscRank.RANK_B, DiscStat.HP_RATIO, new double[]{0.025, 0.033, 0.042, 0.05, 0.058, 0.067, 0.075, 0.083, 0.092, 0.10});
-        STAT.put(DiscRank.RANK_S, DiscStat.DEF_RATIO, new double[]{0.075, 0.09, 0.105, 0.12, 0.135, 0.15, 0.165, 0.18, 0.195, 0.21, 0.225, 0.24, 0.255, 0.27, 0.285, 0.30});
-        STAT.put(DiscRank.RANK_A, DiscStat.DEF_RATIO, new double[]{0.05, 0.0625, 0.075, 0.0875, 0.10, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.20});
-        STAT.put(DiscRank.RANK_B, DiscStat.DEF_RATIO, new double[]{0.025, 0.033, 0.042, 0.05, 0.058, 0.067, 0.075, 0.083, 0.092, 0.10});
+        STAT.put(DiscRank.RANK_S, DiscStat.ATK_RATIO, new double[]{0.075, 0.09, 0.105, 0.12, 0.135, 0.15, 0.165, 0.18, 0.195, 0.21, 0.225, 0.24, 0.255, 0.27, 0.285, 0.30});
+        STAT.put(DiscRank.RANK_A, DiscStat.ATK_RATIO, new double[]{0.05, 0.0625, 0.075, 0.0875, 0.10, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.20});
+        STAT.put(DiscRank.RANK_B, DiscStat.ATK_RATIO, new double[]{0.025, 0.033, 0.042, 0.05, 0.058, 0.067, 0.075, 0.083, 0.092, 0.10});
         STAT.put(DiscRank.RANK_S, DiscStat.DEF_RATIO, new double[]{0.12, 0.144, 0.168, 0.192, 0.216, 0.24, 0.264, 0.288, 0.312, 0.336, 0.36, 0.384, 0.408, 0.432, 0.456, 0.48});
         STAT.put(DiscRank.RANK_A, DiscStat.DEF_RATIO, new double[]{0.08, 0.10, 0.12, 0.14, 0.16, 0.18, 0.20, 0.22, 0.24, 0.26, 0.28, 0.30, 0.32});
         STAT.put(DiscRank.RANK_B, DiscStat.DEF_RATIO, new double[]{0.04, 0.053, 0.067, 0.08, 0.093, 0.107, 0.12, 0.133, 0.147, 0.16});
@@ -41,9 +42,7 @@ public class DiscLevelStat {
         STAT.put(DiscRank.RANK_S, DiscStat.PEN_RATIO, new double[]{0.06, 0.072, 0.084, 0.096, 0.108, 0.12, 0.132, 0.144, 0.156, 0.168, 0.18, 0.192, 0.204, 0.216, 0.228, 0.24});
         STAT.put(DiscRank.RANK_A, DiscStat.PEN_RATIO, new double[]{0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16});
         STAT.put(DiscRank.RANK_B, DiscStat.PEN_RATIO, new double[]{0.02, 0.027, 0.033, 0.04, 0.047, 0.053, 0.06, 0.067, 0.073, 0.08});
-//        STAT.put(DiscRank.RANK_S, DiscStat.ATTRIBUTE_DMG_BONUS, new double[]{0.075, 0.09, 0.105, 0.12, 0.135, 0.15, 0.165, 0.18, 0.195, 0.21, 0.225, 0.24, 0.255, 0.27, 0.285, 0.30});
-//        STAT.put(DiscRank.RANK_A, DiscStat.ATTRIBUTE_DMG_BONUS, new double[]{0.05, 0.0625, 0.075, 0.0875, 0.10, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.20});
-//        STAT.put(DiscRank.RANK_B, DiscStat.ATTRIBUTE_DMG_BONUS, new double[]{0.025, 0.033, 0.042, 0.05, 0.058, 0.067, 0.075, 0.083, 0.092, 0.10});
+        putAttributeBonus(DiscStat.PHYSICAL_DMG_BONUS);
         STAT.put(DiscRank.RANK_S, DiscStat.ANOMALY_PROFICIENCY, new double[]{23, 27, 32, 36, 41, 46, 50, 55, 59, 64, 69, 73, 78, 82, 87, 92});
         STAT.put(DiscRank.RANK_A, DiscStat.ANOMALY_PROFICIENCY, new double[]{15, 18, 22, 26, 30, 33, 37, 41, 45, 48, 52, 56, 60});
         STAT.put(DiscRank.RANK_B, DiscStat.ANOMALY_PROFICIENCY, new double[]{8, 10, 13, 16, 18, 21, 24, 26, 29, 32});
@@ -72,6 +71,12 @@ public class DiscLevelStat {
         SUB_STAT.put(DiscRank.RANK_B, discStat, subStat[0]);
         SUB_STAT.put(DiscRank.RANK_A, discStat, subStat[1]);
         SUB_STAT.put(DiscRank.RANK_S, discStat, subStat[2]);
+    }
+
+    private static void putAttributeBonus(DiscStat stat) {
+          STAT.put(DiscRank.RANK_S, stat, new double[]{0.075, 0.09, 0.105, 0.12, 0.135, 0.15, 0.165, 0.18, 0.195, 0.21, 0.225, 0.24, 0.255, 0.27, 0.285, 0.30});
+          STAT.put(DiscRank.RANK_A, stat, new double[]{0.05, 0.0625, 0.075, 0.0875, 0.10, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.20});
+          STAT.put(DiscRank.RANK_B, stat, new double[]{0.025, 0.033, 0.042, 0.05, 0.058, 0.067, 0.075, 0.083, 0.092, 0.10});
     }
 
     public static double[] getStat(DiscRank rank, DiscStat stat) {

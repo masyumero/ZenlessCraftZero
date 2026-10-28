@@ -1,9 +1,9 @@
 package io.github.masyumero.zenlesscraftzero;
 
 import com.mojang.logging.LogUtils;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscLevelStat;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.DiscLevelStat;
 import io.github.masyumero.zenlesscraftzero.common.ZCZTags;
-import io.github.masyumero.zenlesscraftzero.common.network.s2c.DamageIndicatorNetwork;
+import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZItems;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZTabs;
@@ -30,7 +30,7 @@ public class ZenlessCraftZero {
         ZCZItems.register(modEventBus);
         ZCZAttributes.register(modEventBus);
         ZCZTabs.register(modEventBus);
-        DamageIndicatorNetwork.register();
+        ZCZS2CNetwork.register();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -40,9 +40,11 @@ public class ZenlessCraftZero {
 
     public void onEntityAttributeModification(EntityAttributeModificationEvent event) {
         for (EntityType<? extends LivingEntity> type : event.getTypes()) {
-            if (!event.has(type, ZCZAttributes.ANOMALY_PROFICIENCY.get())) {
-                event.add(type, ZCZAttributes.ANOMALY_PROFICIENCY.get());
-            }
+            ZCZAttributes.NORMAL_ATTRIBUTES.forEach(attribute -> {
+                if (!event.has(type, attribute.get())) {
+                    event.add(type, attribute.get());
+                }
+            });
         }
     }
 }

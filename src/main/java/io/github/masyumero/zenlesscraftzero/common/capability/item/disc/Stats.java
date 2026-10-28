@@ -1,6 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.item.disc;
 
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscStat;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.DiscStat;
 import io.github.masyumero.zenlesscraftzero.common.capability.item.IEquipmentLevel;
 import lombok.Data;
 import net.minecraft.nbt.CompoundTag;

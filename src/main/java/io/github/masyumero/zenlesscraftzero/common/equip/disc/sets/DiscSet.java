@@ -1,10 +1,7 @@
-package io.github.masyumero.zenlesscraftzero.api.equip.disc;
+package io.github.masyumero.zenlesscraftzero.common.equip.disc.sets;
 
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.DiscBonuses;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
-import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.AstralVoiceSet;
-import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.FreedomBluesSet;
 import lombok.Getter;
 
 @Getter

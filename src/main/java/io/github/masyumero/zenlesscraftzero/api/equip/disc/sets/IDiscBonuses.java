@@ -2,7 +2,7 @@ package io.github.masyumero.zenlesscraftzero.api.equip.disc.sets;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSet;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;

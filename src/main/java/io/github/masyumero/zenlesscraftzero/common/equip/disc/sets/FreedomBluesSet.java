@@ -1,8 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.common.equip.disc.sets;
 
 import com.google.common.collect.Multimap;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSet;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.DiscBonuses;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;

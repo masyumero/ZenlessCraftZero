@@ -10,6 +10,9 @@ import io.github.masyumero.zenlesscraftzero.common.capability.item.IEquipmentLev
 import io.github.masyumero.zenlesscraftzero.common.capability.item.disc.DiscItemProvider;
 import io.github.masyumero.zenlesscraftzero.common.capability.item.disc.IStats;
 import io.github.masyumero.zenlesscraftzero.common.capability.item.disc.Stats;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.DiscLevelStat;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.DiscStat;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZItems;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;

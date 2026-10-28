@@ -3,9 +3,10 @@ package io.github.masyumero.zenlesscraftzero.client.event;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
-import io.github.masyumero.zenlesscraftzero.api.anomaly.Attribute;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
 import io.github.masyumero.zenlesscraftzero.api.mixin.MixinFontImpl;
 import io.github.masyumero.zenlesscraftzero.client.indicator.DamageIndicators;
+import io.github.masyumero.zenlesscraftzero.client.indicator.HealthIndicators;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
@@ -33,6 +34,7 @@ public class ZCZClientEvents {
         }
 
         DamageIndicators.tick();
+        HealthIndicators.tick();
     }
 
     @SubscribeEvent
@@ -63,7 +65,7 @@ public class ZCZClientEvents {
             if (entry.isAnomalyEffect) {
                 components.add(Component.translatable(attribute.getAttributeEffect().getEffectLang().getTranslationKey()));
             }
-            components.add(Component.literal(String.format("%.0f", entry.damage)));
+            components.add(Component.literal(String.format("%.0f" + (entry.isCrit ? "!!" : ""), entry.damage)));
 
             int color = (255 << 24) | attribute.getColor();
 

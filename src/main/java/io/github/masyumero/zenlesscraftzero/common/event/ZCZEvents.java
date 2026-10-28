@@ -1,14 +1,16 @@
 package io.github.masyumero.zenlesscraftzero.common.event;
 
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
-import io.github.masyumero.zenlesscraftzero.api.anomaly.Attribute;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSet;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.IDiscBonuses;
 import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.AttributeAnomalyProvider;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
-import io.github.masyumero.zenlesscraftzero.common.network.s2c.DamageIndicatorNetwork;
+import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
+import io.github.masyumero.zenlesscraftzero.common.network.s2c.DamageIndicatorPacket;
+import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
 import io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil;
 import net.minecraft.server.level.ServerLevel;
@@ -90,20 +92,6 @@ public class ZCZEvents {
             if (anomalyLimit == -1) {
                 attributeAnomaly.setAnomalyLimit(20);
             }
-            var attributes = attributeAnomaly.getAttribute();
-            if (!attributes.isEmpty()) {
-                attributes.forEach((uuid, attribute) -> {
-                    if (serverLevel.getEntity(uuid) instanceof LivingEntity livingEntity) {
-                        var anomalyBuildup = attributeAnomaly.getAnomalyBuildup().get(uuid, attribute);
-                        if (anomalyBuildup != null) {
-                            if (anomalyBuildup.equals(anomalyLimit)) {
-                                attribute.getAttributeEffect().onAnomalyEffect(livingEntity, entity);
-                            }
-                        }
-                        attribute.getAttributeEffect().anomalyEffectTick(livingEntity, entity);
-                    }
-                });
-            }
         });
     }
 
@@ -112,22 +100,48 @@ public class ZCZEvents {
         LivingEntity entity = event.getEntity();
         Level level = entity.level();
         var attacker = event.getSource().getDirectEntity();
+        boolean isAttributeEffect = event.getSource().is(ZCZDamageTypes.ATTRIBUTE_EFFECT);
+        boolean isCrit = false;
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
-        entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(attributeAnomaly -> {
-            if (attacker != null) {
-                attributeAnomaly.addAttribute(attacker.getUUID(), Attribute.PHYSICAL);
-                attributeAnomaly.addAnomalyBuildup(attacker.getUUID(), Attribute.PHYSICAL, 100);
-            }
-        });
+        if (!isAttributeEffect) {
+            entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(attributeAnomaly -> {
+                if (attacker != null) {
+                    attributeAnomaly.addAttribute(attacker.getUUID(), Attribute.PHYSICAL);
+                    attributeAnomaly.addAnomalyBuildup(attacker.getUUID(), Attribute.PHYSICAL, 100);
+                    var anomalyLimit = attributeAnomaly.getAnomalyLimit();
+                    var attributes = attributeAnomaly.getAttribute();
+                    if (!attributes.isEmpty()) {
+                        attributes.forEach((uuid, attribute) -> {
+                            if (serverLevel.getEntity(uuid) instanceof LivingEntity livingEntity) {
+                                var anomalyBuildup = attributeAnomaly.getAnomalyBuildup().get(uuid, attribute);
+                                if (anomalyBuildup != null) {
+                                    if (anomalyBuildup.equals(anomalyLimit)) {
+                                        attribute.getAttributeEffect().onAnomalyEffect(livingEntity, entity, event.getAmount());
+                                    }
+                                }
+                                attribute.getAttributeEffect().anomalyEffectTick(livingEntity, entity);
+                            }
+                        });
+                    }
+                }
+            });
 
-        float damage = event.getAmount();
-        if (damage <= 0.0F) {
-            return;
+            if (attacker instanceof LivingEntity livingAttacker) {
+                var critRate = livingAttacker.getAttribute(ZCZAttributes.CRIT_RATE.get());
+                var critDamage = livingAttacker.getAttribute(ZCZAttributes.CRIT_DAMAGE.get());
+                if (critRate != null && critDamage != null) {
+                    if (Math.random() < critRate.getValue()) {
+                        event.setAmount((float) (event.getAmount() * (1 + critDamage.getValue())));
+                        isCrit = true;
+                    }
+                }
+            }
         }
-        DamageIndicatorNetwork.send(serverLevel, Attribute.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), damage, event.getSource().is(ZCZDamageTypes.ATTRIBUTE_EFFECT));
+
+        ZCZS2CNetwork.send(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), new DamageIndicatorPacket(Attribute.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit));
     }
 
     @SubscribeEvent

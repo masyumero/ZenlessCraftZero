@@ -3,10 +3,13 @@ package io.github.masyumero.zenlesscraftzero.client.lang;
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscRank;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSet;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSetting;
+import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZItems;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ZCZLangProvider extends BaseLangProvider {
     public ZCZLangProvider(PackOutput output) {
@@ -31,7 +34,10 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZLang.FREEDOM_BLUES_TWO_PIECE_TOOLTIP, "Anomaly Proficiency +30", "異常マスタリー+30Pt。");
         addENJP(ZCZLang.FREEDOM_BLUES_FOUR_PIECE_TOOLTIP, "When an EX Special Attack hits an enemy, reduce the target's Anomaly Buildup RES to the equipper's Attribute by 20% for 8s. This effect does not stack with others of the same attribute.", "『強化特殊スキル』が敵に命中すると、装備者の属性に応じてターゲットの対応する状態異常蓄積耐性-20%、継続時間8秒。同属性での重ね掛けは不可。");
 
-        addENJP(ZCZLang.ATTRIBUTE_ANOMALY_PROFICIENCY, "Anomaly Proficiency", "異常マスタリー");
+        addAttribute(ZCZAttributes.ANOMALY_PROFICIENCY, "Anomaly Proficiency", "異常マスタリー", "Anomaly Proficiency enhances the damage inflicted by Attribute Anomalies. Each point in Anomaly Proficiency is equivalent to 1% of Attribute Anomaly DMG.", "異常マスタリーは状態異常によるダメージに影響する。異常マスタリー1Ptは、状態異常ダメージ1%に相当する。");
+        addAttribute(ZCZAttributes.PHYSICAL_DMG_BONUS, "Physical DMG Bonus", "物理属性ダメージボーナス", "", "");
+        addAttribute(ZCZAttributes.CRIT_RATE, "CRIT Rate", "会心率", "", "");
+        addAttribute(ZCZAttributes.CRIT_DAMAGE, "CRIT DMG", "会心ダメージ", "", "");
 
         addENJP(ZCZLang.DISC_STAT_MAIN, "Main Stat: ", "メインステータス: ");
         addENJP(ZCZLang.DISC_STAT_SUB, "Sub-Stats: ", "サブステータス: ");
@@ -42,17 +48,19 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZLang.DISC_STAT_HP_RATIO, "HP %s %s%%", "HP %s %s%%");
         addENJP(ZCZLang.DISC_STAT_ATK_RATIO, "ATK %s %s%%", "攻撃力 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_DEF_RATIO, "DEF %s %s%%", "防御力 %s %s%%");
-        addENJP(ZCZLang.DISC_STAT_CRIT_CHANCE, "CRIT Rate %s %s%%", "会心率 %s %s%%");
+        addENJP(ZCZLang.DISC_STAT_CRIT_RATE, "CRIT Rate %s %s%%", "会心率 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_CRIT_DAMAGE, "CRIT DMG %s %s%%", "会心ダメージ %s %s%%");
-        addENJP(ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, "Anomaly Proficiency %s %s%%", "異常マスタリー %s %s%%");
+        addENJP(ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, "Anomaly Proficiency %s %s", "異常マスタリー %s %s");
         addENJP(ZCZLang.DISC_STAT_PEN_RATIO, "PEN Ratio %s %s%%", "貫通率 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PEN, "PEN %s %s%%", "貫通値 %s %s%%");
+        addENJP(ZCZLang.DISC_STAT_PHYSICAL_DMG, "Physical DMG Bonus %s %s%%", "物理属性ダメージボーナス %s %s%%");
 
         addENJP(ZCZItems.MOLDED_PLATING_AGENT.get(), "Molded Plating Agent", "可塑化助剤");
         addENJP(ZCZItems.CRYSTALLIZED_PLATING_AGENT.get(), "Crystallized Plating Agent", "結晶化助剤");
         addENJP(ZCZItems.ETHER_PLATING_AGENT.get(), "Ether Plating Agent", "エーテル助剤");
 
         addENJP(ZCZLang.ANOMALY_EFFECT_PHYSICAL, "Assault!!", "強撃!!");
+        addENJP(ZCZLang.ANOMALY_PHYSICAL, "Physical", "物理");
 
         addDisc(DiscSet.ASTRAL_VOICE, "Astral Voice", "静寂のアストラ");
         addDisc(DiscSet.FREEDOM_BLUES, "Freedom Blues", "フリーダム・ブルース");
@@ -66,5 +74,10 @@ public class ZCZLangProvider extends BaseLangProvider {
                 addENJP(ZCZItems.getDisc(new DiscSetting(set, partition, rank)).get(), en, jp);
             }
         }
+    }
+
+    private void addAttribute(RegistryObject<Attribute> attribute, String en, String jp, String descEn, String descJp) {
+        addENJP(attribute.get().getDescriptionId(), en, jp);
+        addENJP(attribute.get().getDescriptionId() + "desc", descEn, descJp);
     }
 }

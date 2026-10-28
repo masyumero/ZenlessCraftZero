@@ -3,7 +3,7 @@ package io.github.masyumero.zenlesscraftzero.common.registries;
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscRank;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSet;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSetting;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
 import net.minecraft.world.item.Item;

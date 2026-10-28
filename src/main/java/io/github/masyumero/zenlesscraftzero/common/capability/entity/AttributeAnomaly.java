@@ -2,7 +2,7 @@ package io.github.masyumero.zenlesscraftzero.common.capability.entity;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import io.github.masyumero.zenlesscraftzero.api.anomaly.Attribute;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
 import lombok.Data;
 import net.minecraft.nbt.CompoundTag;
 

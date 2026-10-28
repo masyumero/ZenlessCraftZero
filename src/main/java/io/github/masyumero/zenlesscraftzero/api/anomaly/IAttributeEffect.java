@@ -5,7 +5,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public interface IAttributeEffect {
 
-    void onAnomalyEffect(LivingEntity attacker, LivingEntity anomalyTarget);
+    void onAnomalyEffect(LivingEntity attacker, LivingEntity anomalyTarget, float damage);
 
     default void anomalyEffectTick(LivingEntity attacker, LivingEntity anomalyTarget) {};
 
