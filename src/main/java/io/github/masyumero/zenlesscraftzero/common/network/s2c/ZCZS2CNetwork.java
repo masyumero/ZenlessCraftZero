@@ -33,14 +33,21 @@ public class ZCZS2CNetwork {
                 DamageIndicatorPacket.INSTANCE::decode,
                 DamageIndicatorPacket.INSTANCE::handle
         );
+        registerPacket(
+                HealthIndicatorPacket.class,
+                HealthIndicatorPacket.INSTANCE::encode,
+                HealthIndicatorPacket.INSTANCE::decode,
+                HealthIndicatorPacket.INSTANCE::handle
+        );
+        registerPacket(
+                AttributeAnomalySyncPacket.class,
+                AttributeAnomalySyncPacket.INSTANCE::encode,
+                AttributeAnomalySyncPacket.INSTANCE::decode,
+                AttributeAnomalySyncPacket.INSTANCE::handle
+        );
     }
 
-    public static <P extends IZCZPacket<P>> void registerPacket(
-            Class<P> packetClass,
-            BiConsumer<P, FriendlyByteBuf> encoder,
-            Function<FriendlyByteBuf, P> decoder,
-            BiConsumer<P, Supplier<Context>> handler
-    ) {
+    public static <P extends IZCZPacket<P>> void registerPacket(Class<P> packetClass, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, Supplier<Context>> handler) {
         CHANNEL.messageBuilder(packetClass, nextPacketId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(encoder)
                 .decoder(decoder)
@@ -48,7 +55,7 @@ public class ZCZS2CNetwork {
                 .add();
     }
 
-    public static <MSG> void send(ServerLevel level, double x, double y, double z, MSG message) {
-        CHANNEL.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(x, y, z, 64.0, level.dimension())), message);
+    public static <MSG> void send(ServerLevel level, double x, double y, double z, double r2, MSG message) {
+        CHANNEL.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(x, y, z, r2, level.dimension())), message);
     }
 }

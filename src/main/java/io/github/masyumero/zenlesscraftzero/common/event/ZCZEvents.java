@@ -1,19 +1,22 @@
 package io.github.masyumero.zenlesscraftzero.common.event;
 
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
-import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
-import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.IDiscBonuses;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
 import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.AttributeAnomalyProvider;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
-import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
+import io.github.masyumero.zenlesscraftzero.common.network.s2c.AttributeAnomalySyncPacket;
 import io.github.masyumero.zenlesscraftzero.common.network.s2c.DamageIndicatorPacket;
+import io.github.masyumero.zenlesscraftzero.common.network.s2c.HealthIndicatorPacket;
+import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
 import io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -82,16 +85,13 @@ public class ZCZEvents {
     @SubscribeEvent
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         LivingEntity entity = event.getEntity();
-        Level level = entity.level();
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
 
         entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(attributeAnomaly -> {
             var anomalyLimit = attributeAnomaly.getAnomalyLimit();
             if (anomalyLimit == -1) {
-                attributeAnomaly.setAnomalyLimit(20);
+                attributeAnomaly.setAnomalyLimit(500);
             }
+            AttributeAnomalySyncPacket.syncAttributeAnomaly(entity);
         });
     }
 
@@ -110,7 +110,7 @@ public class ZCZEvents {
             entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(attributeAnomaly -> {
                 if (attacker != null) {
                     attributeAnomaly.addAttribute(attacker.getUUID(), Attribute.PHYSICAL);
-                    attributeAnomaly.addAnomalyBuildup(attacker.getUUID(), Attribute.PHYSICAL, 100);
+                    attributeAnomaly.addAnomalyBuildup(attacker.getUUID(), Attribute.PHYSICAL, 500 / 16);
                     var anomalyLimit = attributeAnomaly.getAnomalyLimit();
                     var attributes = attributeAnomaly.getAttribute();
                     if (!attributes.isEmpty()) {
@@ -127,6 +127,7 @@ public class ZCZEvents {
                         });
                     }
                 }
+                AttributeAnomalySyncPacket.syncAttributeAnomaly(entity);
             });
 
             if (attacker instanceof LivingEntity livingAttacker) {
@@ -141,7 +142,8 @@ public class ZCZEvents {
             }
         }
 
-        ZCZS2CNetwork.send(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), new DamageIndicatorPacket(Attribute.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit));
+        ZCZS2CNetwork.send(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(Attribute.PHYSICAL, entity.getId()));
+        ZCZS2CNetwork.send(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(Attribute.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit));
     }
 
     @SubscribeEvent
@@ -175,6 +177,18 @@ public class ZCZEvents {
             });
         } finally {
             original.invalidateCaps();
+            AttributeAnomalySyncPacket.syncAttributeAnomaly(clone);
         }
+    }
+
+    @SubscribeEvent
+    public static void onStartTracking(PlayerEvent.StartTracking event) {
+        Entity target = event.getTarget();
+
+        if (!(event.getEntity() instanceof ServerPlayer)) {
+            return;
+        }
+
+        AttributeAnomalySyncPacket.syncAttributeAnomaly(target);
     }
 }

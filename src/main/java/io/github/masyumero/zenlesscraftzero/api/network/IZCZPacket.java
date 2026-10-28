@@ -11,5 +11,5 @@ public interface IZCZPacket<P extends IZCZPacket<P>> {
 
     P decode(FriendlyByteBuf buffer);
 
-    void handle(P packet, Supplier<Context> context);
+    void handle(P packet, Supplier<Context> supplier);
 }

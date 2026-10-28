@@ -1,8 +1,8 @@
 package io.github.masyumero.zenlesscraftzero.common.network.s2c;
 
-import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
 import io.github.masyumero.zenlesscraftzero.api.network.IZCZPacket;
-import io.github.masyumero.zenlesscraftzero.client.indicator.DamageIndicators;
+import io.github.masyumero.zenlesscraftzero.client.indicator.DamageIndicator;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -13,7 +13,11 @@ import java.util.function.Supplier;
 public record DamageIndicatorPacket(Attribute attribute, double x, double y, double z, float damage,
                                     boolean isAnomalyEffect, boolean isCrit) implements IZCZPacket<DamageIndicatorPacket> {
 
-    public static final DamageIndicatorPacket INSTANCE = new DamageIndicatorPacket(null, 0, 0, 0, 0, false, false);
+    public static final DamageIndicatorPacket INSTANCE = new DamageIndicatorPacket();
+
+    private DamageIndicatorPacket() {
+        this(null, 0, 0, 0, 0, false, false);
+    }
 
     @Override
     public void encode(DamageIndicatorPacket packet, FriendlyByteBuf buffer) {
@@ -36,7 +40,7 @@ public record DamageIndicatorPacket(Attribute attribute, double x, double y, dou
         Context context = supplier.get();
 
         context.enqueueWork(() ->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> DamageIndicators.add(packet.attribute, packet.x, packet.y, packet.z, packet.damage, packet.isAnomalyEffect, packet.isCrit))
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> DamageIndicator.INSTANCE.add(packet.attribute, packet.x, packet.y, packet.z, packet.damage, packet.isAnomalyEffect, packet.isCrit))
         );
 
         context.setPacketHandled(true);
