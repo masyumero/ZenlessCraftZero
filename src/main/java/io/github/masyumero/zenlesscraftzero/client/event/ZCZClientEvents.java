@@ -37,6 +37,6 @@ public class ZCZClientEvents {
 
         PoseStack poseStack = event.getPoseStack();
         Camera camera = event.getCamera();
-        IIndicator.INDICATORS.forEach(indicator -> indicator.render(poseStack, camera, ZCZClientUtil.bufferSource()));
+        IIndicator.INDICATORS.forEach(indicator -> indicator.render(poseStack, mc.level, camera, ZCZClientUtil.bufferSource()));
     }
 }

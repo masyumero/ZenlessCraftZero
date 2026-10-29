@@ -55,7 +55,7 @@ public class ZCZS2CNetwork {
                 .add();
     }
 
-    public static <MSG> void send(ServerLevel level, double x, double y, double z, double r2, MSG message) {
+    public static <MSG> void sendIndicator(ServerLevel level, double x, double y, double z, double r2, MSG message) {
         CHANNEL.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(x, y, z, r2, level.dimension())), message);
     }
 }

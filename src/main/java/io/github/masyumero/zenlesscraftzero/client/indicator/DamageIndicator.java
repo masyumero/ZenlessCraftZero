@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,7 +32,7 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
     }
 
     @Override
-    public void render(PoseStack poseStack, Camera camera, MultiBufferSource.BufferSource buffer) {
+    public void render(PoseStack poseStack, Level level, Camera camera, MultiBufferSource.BufferSource buffer) {
         Minecraft mc = Minecraft.getInstance();
         Vec3 cameraPos = camera.getPosition();
         Font font = mc.font;

@@ -142,8 +142,8 @@ public class ZCZEvents {
             }
         }
 
-        ZCZS2CNetwork.send(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(Attribute.PHYSICAL, entity.getId()));
-        ZCZS2CNetwork.send(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(Attribute.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit));
+        ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(Attribute.PHYSICAL, entity.getId()));
+        ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(Attribute.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit));
     }
 
     @SubscribeEvent

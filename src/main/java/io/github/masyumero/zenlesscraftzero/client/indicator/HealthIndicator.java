@@ -1,5 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.client.indicator;
 
+import com.google.common.collect.Table;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.masyumero.zenlesscraftzero.api.indicator.AbstractIndicator;
@@ -13,13 +14,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
@@ -30,9 +33,11 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
     private static final List<ResourceLocation> ANOMALY_INDICATORS = new ArrayList<>();
 
     static {
-        HEALTH_INDICATORS.add(ZCZUtil.rl("textures/health_indicator.png"));
+        for (int i = 0; i < 39; i++) {
+            HEALTH_INDICATORS.add(ZCZUtil.rl("textures/health_indicator/" + i + ".png"));
+        }
         for (int i = 0; i < 19; i++) {
-            ANOMALY_INDICATORS.add(ZCZUtil.rl("textures/anomaly_indicator_"+ i +".png"));
+            ANOMALY_INDICATORS.add(ZCZUtil.rl("textures/anomaly_indicator/"+ i +".png"));
         }
     }
 
@@ -41,13 +46,13 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
     }
 
     @Override
-    public void render(PoseStack poseStack, Camera camera, MultiBufferSource.BufferSource buffer) {
+    public void render(PoseStack poseStack, Level level, Camera camera, MultiBufferSource.BufferSource buffer) {
         Minecraft mc = Minecraft.getInstance();
         Vec3 cameraPosition = camera.getPosition();
         RenderSystem.disableDepthTest();
         for (Entry entry : ENTRIES) {
-            Entity entity = mc.level.getEntity(entry.entityId);
-            if (entity == null) {
+            Entity entity = level.getEntity(entry.entityId);
+            if (!(entity instanceof LivingEntity livingEntity)) {
                 continue;
             }
 
@@ -60,16 +65,16 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
             ZCZClientUtil.render(poseStack, () -> {
                 poseStack.translate(x, y, z);
                 poseStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
-                for (ResourceLocation indicator : HEALTH_INDICATORS) {
-                    ZCZClientUtil.drawTexture(poseStack, buffer, indicator, -1.0f, 1.0f, color);
-                }
+                ZCZClientUtil.drawTexture(poseStack, buffer, HEALTH_INDICATORS.get(ZCZMathUtil.normalize(livingEntity.getHealth(), livingEntity.getMaxHealth(), 38)), -1.0f, 1.0f, 0xFFFFFFFF);
                 entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(anomaly -> {
-                    AtomicInteger anomalyBuildup = new AtomicInteger(0);
-                    anomaly.getAnomalyBuildup().cellSet().forEach(buildup -> {
-                        anomalyBuildup.getAndAdd(buildup.getValue());
-                    });
+                    int anomalyBuildup = 0;
+                    for (Table.Cell<UUID, Attribute, Integer> buildup : anomaly.getAnomalyBuildup().cellSet()) {
+                        if (entry.attribute.equals(buildup.getColumnKey())) {
+                            anomalyBuildup += buildup.getValue();
+                        }
+                    }
                     var anomalyLimit = anomaly.getAnomalyLimit();
-                    ZCZClientUtil.drawTexture(poseStack, buffer, ANOMALY_INDICATORS.get(ZCZMathUtil.normalize(anomalyBuildup.get(), anomalyLimit)), -1.0f, 1.0f, color);
+                    ZCZClientUtil.drawTexture(poseStack, buffer, ANOMALY_INDICATORS.get(ZCZMathUtil.normalize(anomalyBuildup, anomalyLimit, 18)), -1.0f, 1.0f, color);
                 });
             });
         }
