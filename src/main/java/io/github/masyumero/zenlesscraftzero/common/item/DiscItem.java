@@ -3,7 +3,11 @@ package io.github.masyumero.zenlesscraftzero.common.item;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
-import io.github.masyumero.zenlesscraftzero.api.equip.disc.*;
+import io.github.masyumero.zenlesscraftzero.api.equip.Rank;
+import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
+import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscRank;
+import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSetting;
+import io.github.masyumero.zenlesscraftzero.api.item.IHasRank;
 import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
 import io.github.masyumero.zenlesscraftzero.common.capability.item.EquipmentLevel;
 import io.github.masyumero.zenlesscraftzero.common.capability.item.IEquipmentLevel;
@@ -44,7 +48,7 @@ import java.util.Random;
 import java.util.function.Predicate;
 
 @Getter
-public class DiscItem extends Item implements ICurioItem {
+public class DiscItem extends Item implements ICurioItem, IHasRank {
 
     private static final Random RANDOM = new Random();
 
@@ -345,5 +349,10 @@ public class DiscItem extends Item implements ICurioItem {
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag tag) {
         return new DiscItemProvider(new EquipmentLevel(maxLevel, maxXp), Stats::new, tag);
+    }
+
+    @Override
+    public Rank getRank() {
+        return discRank.getRank();
     }
 }

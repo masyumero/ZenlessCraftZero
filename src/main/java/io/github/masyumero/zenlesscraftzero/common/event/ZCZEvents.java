@@ -1,10 +1,11 @@
 package io.github.masyumero.zenlesscraftzero.common.event;
 
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
+import io.github.masyumero.zenlesscraftzero.api.ZenlessCraftZeroApi;
+import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.IDiscBonuses;
-import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
-import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.AttributeAnomalyProvider;
 import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
@@ -34,6 +35,8 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 
 @Mod.EventBusSubscriber(modid = ZenlessCraftZero.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -86,13 +89,12 @@ public class ZCZEvents {
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         LivingEntity entity = event.getEntity();
 
-        entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(attributeAnomaly -> {
+        ZenlessCraftZeroApi.getAttributeAnomaly(entity, attributeAnomaly -> {
             var anomalyLimit = attributeAnomaly.getAnomalyLimit();
             if (anomalyLimit == -1) {
-                attributeAnomaly.setAnomalyLimit(500);
+                attributeAnomaly.setAnomalyLimit((int) (30 * entity.getMaxHealth()));
             }
-            AttributeAnomalySyncPacket.syncAttributeAnomaly(entity);
-        });
+        }, true);
     }
 
     @SubscribeEvent
@@ -107,28 +109,33 @@ public class ZCZEvents {
         }
 
         if (!isAttributeEffect) {
-            entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(attributeAnomaly -> {
+            ZenlessCraftZeroApi.getAttributeAnomaly(entity, attributeAnomaly -> {
                 if (attacker != null) {
-                    attributeAnomaly.addAttribute(attacker.getUUID(), Attribute.PHYSICAL);
-                    attributeAnomaly.addAnomalyBuildup(attacker.getUUID(), Attribute.PHYSICAL, 500 / 16);
+                    attributeAnomaly.addAttribute(attacker.getUUID(), AttributeAnomaly.PHYSICAL);
+                    attributeAnomaly.addAnomalyBuildup(attacker.getUUID(), AttributeAnomaly.PHYSICAL, 500 / 16);
                     var anomalyLimit = attributeAnomaly.getAnomalyLimit();
                     var attributes = attributeAnomaly.getAttribute();
                     if (!attributes.isEmpty()) {
-                        attributes.forEach((uuid, attribute) -> {
+                        for (Map.Entry<UUID, IAttributeAnomaly> entry : attributes.entrySet()) {
+                            UUID uuid = entry.getKey();
+                            IAttributeAnomaly attribute = entry.getValue();
                             if (serverLevel.getEntity(uuid) instanceof LivingEntity livingEntity) {
                                 var anomalyBuildup = attributeAnomaly.getAnomalyBuildup().get(uuid, attribute);
                                 if (anomalyBuildup != null) {
+                                    if (attribute.equals(AttributeAnomaly.PHYSICAL)) {
+                                        anomalyLimit = (int) (anomalyLimit * 1.2);
+                                    }
                                     if (anomalyBuildup.equals(anomalyLimit)) {
                                         attribute.getAttributeEffect().onAnomalyEffect(livingEntity, entity, event.getAmount());
                                     }
                                 }
                                 attribute.getAttributeEffect().anomalyEffectTick(livingEntity, entity);
                             }
-                        });
+                        }
                     }
                 }
                 AttributeAnomalySyncPacket.syncAttributeAnomaly(entity);
-            });
+            }, true);
 
             if (attacker instanceof LivingEntity livingAttacker) {
                 var critRate = livingAttacker.getAttribute(ZCZAttributes.CRIT_RATE.get());
@@ -142,8 +149,8 @@ public class ZCZEvents {
             }
         }
 
-        ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(Attribute.PHYSICAL, entity.getId()));
-        ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(Attribute.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit));
+        ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(AttributeAnomaly.PHYSICAL, entity.getId()));
+        ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(AttributeAnomaly.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit));
     }
 
     @SubscribeEvent
@@ -170,14 +177,13 @@ public class ZCZEvents {
         original.reviveCaps();
 
         try {
-            original.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(oldAttributeAnomaly -> {
-                clone.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(newAttributeAnomaly -> {
+            ZenlessCraftZeroApi.getAttributeAnomaly(original, oldAttributeAnomaly -> {
+                ZenlessCraftZeroApi.getAttributeAnomaly(clone, newAttributeAnomaly -> {
                     newAttributeAnomaly.deserializeNBT(oldAttributeAnomaly.serializeNBT());
-                });
-            });
+                }, true);
+            }, false);
         } finally {
             original.invalidateCaps();
-            AttributeAnomalySyncPacket.syncAttributeAnomaly(clone);
         }
     }
 

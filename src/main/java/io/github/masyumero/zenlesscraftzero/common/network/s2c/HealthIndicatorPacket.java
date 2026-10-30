@@ -2,7 +2,7 @@ package io.github.masyumero.zenlesscraftzero.common.network.s2c;
 
 import io.github.masyumero.zenlesscraftzero.api.network.IZCZPacket;
 import io.github.masyumero.zenlesscraftzero.client.indicator.HealthIndicator;
-import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -10,7 +10,7 @@ import net.minecraftforge.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
 
-public record HealthIndicatorPacket(Attribute attribute, int entityId) implements IZCZPacket<HealthIndicatorPacket> {
+public record HealthIndicatorPacket(AttributeAnomaly attributeAnomaly, int entityId) implements IZCZPacket<HealthIndicatorPacket> {
 
     public static final HealthIndicatorPacket INSTANCE = new HealthIndicatorPacket();
 
@@ -20,13 +20,13 @@ public record HealthIndicatorPacket(Attribute attribute, int entityId) implement
 
     @Override
     public void encode(HealthIndicatorPacket packet, FriendlyByteBuf buffer) {
-        buffer.writeEnum(packet.attribute);
+        buffer.writeEnum(packet.attributeAnomaly);
         buffer.writeInt(packet.entityId);
     }
 
     @Override
     public HealthIndicatorPacket decode(FriendlyByteBuf buffer) {
-        return new HealthIndicatorPacket(buffer.readEnum(Attribute.class), buffer.readInt());
+        return new HealthIndicatorPacket(buffer.readEnum(AttributeAnomaly.class), buffer.readInt());
     }
 
     @Override
@@ -34,7 +34,7 @@ public record HealthIndicatorPacket(Attribute attribute, int entityId) implement
         Context context = supplier.get();
 
         context.enqueueWork(() ->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> HealthIndicator.INSTANCE.add(packet.attribute, packet.entityId))
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> HealthIndicator.INSTANCE.add(packet.attributeAnomaly, packet.entityId))
         );
 
         context.setPacketHandled(true);

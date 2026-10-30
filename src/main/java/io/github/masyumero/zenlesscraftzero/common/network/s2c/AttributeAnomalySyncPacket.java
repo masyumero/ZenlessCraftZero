@@ -1,7 +1,7 @@
 package io.github.masyumero.zenlesscraftzero.common.network.s2c;
 
+import io.github.masyumero.zenlesscraftzero.api.ZenlessCraftZeroApi;
 import io.github.masyumero.zenlesscraftzero.api.network.IZCZPacket;
-import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -47,9 +47,9 @@ public record AttributeAnomalySyncPacket(int entityId, CompoundTag tag)
                         return;
                     }
 
-                    entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(anomaly -> {
+                    ZenlessCraftZeroApi.getAttributeAnomaly(entity,anomaly -> {
                         anomaly.deserializeNBT(packet.tag);
-                    });
+                    }, false);
                 })
         );
 
@@ -61,9 +61,9 @@ public record AttributeAnomalySyncPacket(int entityId, CompoundTag tag)
             return;
         }
 
-        entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(anomaly -> {
+        ZenlessCraftZeroApi.getAttributeAnomaly(entity,anomaly -> {
             CompoundTag data = anomaly.serializeNBT();
             ZCZS2CNetwork.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new AttributeAnomalySyncPacket(entity.getId(), data));
-        });
+        }, false);
     }
 }

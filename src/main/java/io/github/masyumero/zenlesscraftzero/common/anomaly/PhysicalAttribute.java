@@ -3,10 +3,10 @@ package io.github.masyumero.zenlesscraftzero.common.anomaly;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
+import io.github.masyumero.zenlesscraftzero.api.ZenlessCraftZeroApi;
+import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
-import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
-import io.github.masyumero.zenlesscraftzero.common.network.s2c.AttributeAnomalySyncPacket;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
 import net.minecraft.core.registries.Registries;
@@ -25,12 +25,11 @@ public class PhysicalAttribute implements IAttributeEffect {
             float effectDamage = (float) (damage * (anomalyProficiency.getValue() / 100) * 7.13 * (1 + dmgBonus.getValue()));
             var damageSource = new DamageSource(attacker.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(ZCZDamageTypes.ATTRIBUTE_EFFECT));
             anomalyTarget.hurt(damageSource, effectDamage);
-            anomalyTarget.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(attributeAnomaly -> {
-                Table<UUID, Attribute, Integer> buildup = HashBasedTable.create();
-                buildup.put(anomalyTarget.getUUID(), Attribute.PHYSICAL, 0);
+            ZenlessCraftZeroApi.getAttributeAnomaly(anomalyTarget,attributeAnomaly -> {
+                Table<UUID, IAttributeAnomaly, Integer> buildup = HashBasedTable.create();
+                buildup.put(anomalyTarget.getUUID(), AttributeAnomaly.PHYSICAL, 0);
                 attributeAnomaly.setAnomalyBuildup(buildup);
-                AttributeAnomalySyncPacket.syncAttributeAnomaly(anomalyTarget);
-            });
+            }, true);
         }
     }
 

@@ -1,11 +1,13 @@
 package io.github.masyumero.zenlesscraftzero.common.registries;
 
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
+import io.github.masyumero.zenlesscraftzero.api.equip.Rank;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscRank;
-import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSetting;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
+import io.github.masyumero.zenlesscraftzero.common.item.RankItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -33,9 +35,9 @@ public class ZCZItems {
     }
 
     public static final RegistryObject<Item> ICON = registerItem("icon", Item::new);
-    public static final RegistryObject<Item> MOLDED_PLATING_AGENT = registerItem("molded_plating_agent", Item::new);
-    public static final RegistryObject<Item> CRYSTALLIZED_PLATING_AGENT = registerItem("crystallized_plating_agent", Item::new);
-    public static final RegistryObject<Item> ETHER_PLATING_AGENT = registerItem("ether_plating_agent", Item::new);
+    public static final RegistryObject<Item> MOLDED_PLATING_AGENT = registerRankItem("molded_plating_agent", Rank.RANK_C);
+    public static final RegistryObject<Item> CRYSTALLIZED_PLATING_AGENT = registerRankItem("crystallized_plating_agent", Rank.RANK_B);
+    public static final RegistryObject<Item> ETHER_PLATING_AGENT = registerRankItem("ether_plating_agent", Rank.RANK_A);
 
     private static RegistryObject<Item> registerDisc(DiscSetting setting) {
         return ITEMS.register(setting.set().getId() + "_" + setting.partition().getSlotNumber() + "_" + setting.rank().getId(), () -> new DiscItem(setting));
@@ -43,6 +45,10 @@ public class ZCZItems {
 
     private static RegistryObject<Item> registerItem(String name, Function<Item.Properties, Item> item) {
         return ITEMS.register(name, () -> item.apply(new Item.Properties()));
+    }
+
+    private static RegistryObject<Item> registerRankItem(String name, Rank rank) {
+        return ITEMS.register(name, () -> new RankItem(rank));
     }
 
     public static RegistryObject<Item> getDisc(DiscSetting setting) {

@@ -11,11 +11,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class AttributeAnomalyProvider implements ICapabilitySerializable<CompoundTag> {
 
-    private final AttributeAnomaly attributeAnomaly;
-    private final LazyOptional<IAttributeAnomaly> optional;
+    private final AttributeAnomalyCapability attributeAnomaly;
+    private final LazyOptional<IAttributeAnomalyCapability> optional;
 
     public AttributeAnomalyProvider() {
-        this.attributeAnomaly = new AttributeAnomaly();
+        this.attributeAnomaly = new AttributeAnomalyCapability();
         this.optional = LazyOptional.of(() -> attributeAnomaly);
     }
 

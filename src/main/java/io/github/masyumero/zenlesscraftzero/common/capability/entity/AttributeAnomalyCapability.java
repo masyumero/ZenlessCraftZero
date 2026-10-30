@@ -2,7 +2,8 @@ package io.github.masyumero.zenlesscraftzero.common.capability.entity;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
+import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import lombok.Data;
 import net.minecraft.nbt.CompoundTag;
 
@@ -11,42 +12,42 @@ import java.util.Map;
 import java.util.UUID;
 
 @Data
-public class AttributeAnomaly implements IAttributeAnomaly {
+public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
 
-    private final Map<UUID, Attribute> attribute = new HashMap<>();
-    private final Table<UUID, Attribute, Integer> anomalyBuildup = HashBasedTable.create();
+    private final Map<UUID, IAttributeAnomaly> attribute = new HashMap<>();
+    private final Table<UUID, IAttributeAnomaly, Integer> anomalyBuildup = HashBasedTable.create();
     private int anomalyLimit = -1;
 
-    public AttributeAnomaly() {}
+    public AttributeAnomalyCapability() {}
 
     @Override
-    public void setAttribute(Map<UUID, Attribute> attributes) {
+    public void setAttribute(Map<UUID, IAttributeAnomaly> attributes) {
         this.attribute.clear();
         this.attribute.putAll(attributes);
     }
 
     @Override
-    public void addAttribute(UUID uuid, Attribute attribute) {
-        Map<UUID, Attribute> attributes = new HashMap<>();
-        attributes.put(uuid, attribute);
+    public void addAttribute(UUID uuid, IAttributeAnomaly attributeAnomaly) {
+        Map<UUID, IAttributeAnomaly> attributes = new HashMap<>();
+        attributes.put(uuid, attributeAnomaly);
         this.attribute.clear();
         this.attribute.putAll(attributes);
     }
 
     @Override
-    public void setAnomalyBuildup(Table<UUID, Attribute, Integer> buildup) {
+    public void setAnomalyBuildup(Table<UUID, IAttributeAnomaly, Integer> buildup) {
         this.anomalyBuildup.clear();
         this.anomalyBuildup.putAll(buildup);
     }
 
     @Override
-    public void addAnomalyBuildup(UUID uuid, Attribute attribute, int buildup) {
-        Integer anomalyBuildup = this.anomalyBuildup.get(uuid, attribute);
+    public void addAnomalyBuildup(UUID uuid, IAttributeAnomaly attributeAnomaly, int buildup) {
+        Integer anomalyBuildup = this.anomalyBuildup.get(uuid, attributeAnomaly);
         if (anomalyBuildup == null) {
-            this.anomalyBuildup.put(uuid, attribute, Math.min(buildup, anomalyLimit));
+            this.anomalyBuildup.put(uuid, attributeAnomaly, Math.min(buildup, anomalyLimit));
             return;
         }
-        this.anomalyBuildup.put(uuid, attribute, Math.min(anomalyBuildup + buildup, anomalyLimit));
+        this.anomalyBuildup.put(uuid, attributeAnomaly, Math.min(anomalyBuildup + buildup, anomalyLimit));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class AttributeAnomaly implements IAttributeAnomaly {
         this.getAttribute().forEach((uuid, attribute) -> {
             attributeTag.putString(uuid.toString(), attribute.getId());
         });
-        tag.put("attribute", attributeTag);
+        tag.put("attribute_anomaly", attributeTag);
         this.getAnomalyBuildup().cellSet().forEach(buildup -> {
             CompoundTag buildupAttributeTag = new CompoundTag();
             buildupAttributeTag.putInt(buildup.getColumnKey().getId(), buildup.getValue());
@@ -70,13 +71,13 @@ public class AttributeAnomaly implements IAttributeAnomaly {
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        CompoundTag attributeTag = tag.getCompound("attribute");
+        CompoundTag attributeTag = tag.getCompound("attribute_anomaly");
         CompoundTag buildupTag = tag.getCompound("anomaly_buildup");
-        Map<UUID, Attribute> attributes = new HashMap<>();
-        Table<UUID, Attribute, Integer> buildup = HashBasedTable.create();
+        Map<UUID, IAttributeAnomaly> attributes = new HashMap<>();
+        Table<UUID, IAttributeAnomaly, Integer> buildup = HashBasedTable.create();
         if (!attributeTag.isEmpty()) {
             attributeTag.getAllKeys().forEach(uuid -> {
-                attributes.put(UUID.fromString(uuid), Attribute.getFromId(attributeTag.getString(uuid)));
+                attributes.put(UUID.fromString(uuid), AttributeAnomaly.getFromId(attributeTag.getString(uuid)));
             });
             this.setAttribute(attributes);
         }
@@ -85,7 +86,7 @@ public class AttributeAnomaly implements IAttributeAnomaly {
                 var buildupAttribute = buildupTag.getCompound(uuid);
                 buildupAttribute.getAllKeys().forEach(attribute -> {
                     var buildupValue = buildupAttribute.getInt(attribute);
-                    buildup.put(UUID.fromString(uuid), Attribute.getFromId(attribute), buildupValue);
+                    buildup.put(UUID.fromString(uuid), AttributeAnomaly.getFromId(attribute), buildupValue);
                 });
             });
             this.setAnomalyBuildup(buildup);

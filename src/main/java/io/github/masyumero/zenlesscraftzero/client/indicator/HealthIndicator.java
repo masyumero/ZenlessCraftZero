@@ -3,10 +3,11 @@ package io.github.masyumero.zenlesscraftzero.client.indicator;
 import com.google.common.collect.Table;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.github.masyumero.zenlesscraftzero.api.ZenlessCraftZeroApi;
+import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.indicator.AbstractIndicator;
 import io.github.masyumero.zenlesscraftzero.client.ZCZClientUtil;
-import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
-import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.utils.ZCZMathUtil;
 import io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil;
 import net.minecraft.client.Camera;
@@ -41,8 +42,8 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
         }
     }
 
-    public void add(Attribute attribute, int entityId) {
-        this.add(new Entry(attribute, entityId));
+    public void add(AttributeAnomaly attributeAnomaly, int entityId) {
+        this.add(new Entry(attributeAnomaly, entityId));
     }
 
     @Override
@@ -60,22 +61,22 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
             double y = entity.getY() + entity.getBbHeight() + 0.1 - cameraPosition.y;
             double z = entity.getZ() - cameraPosition.z;
 
-            int color = (255 << 24) | entry.attribute.getColor();
+            int color = (255 << 24) | entry.attributeAnomaly.getColor();
 
             ZCZClientUtil.render(poseStack, () -> {
                 poseStack.translate(x, y, z);
                 poseStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
                 ZCZClientUtil.drawTexture(poseStack, buffer, HEALTH_INDICATORS.get(ZCZMathUtil.normalize(livingEntity.getHealth(), livingEntity.getMaxHealth(), 38)), -1.0f, 1.0f, 0xFFFFFFFF);
-                entity.getCapability(ZCZCapabilities.ATTRIBUTE_ANOMALY).ifPresent(anomaly -> {
+                ZenlessCraftZeroApi.getAttributeAnomaly(entity, anomaly -> {
                     int anomalyBuildup = 0;
-                    for (Table.Cell<UUID, Attribute, Integer> buildup : anomaly.getAnomalyBuildup().cellSet()) {
-                        if (entry.attribute.equals(buildup.getColumnKey())) {
+                    for (Table.Cell<UUID, IAttributeAnomaly, Integer> buildup : anomaly.getAnomalyBuildup().cellSet()) {
+                        if (entry.attributeAnomaly.equals(buildup.getColumnKey())) {
                             anomalyBuildup += buildup.getValue();
                         }
                     }
                     var anomalyLimit = anomaly.getAnomalyLimit();
                     ZCZClientUtil.drawTexture(poseStack, buffer, ANOMALY_INDICATORS.get(ZCZMathUtil.normalize(anomalyBuildup, anomalyLimit, 18)), -1.0f, 1.0f, color);
-                });
+                }, false);
             });
         }
         buffer.endBatch();
@@ -99,12 +100,12 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
     }
 
     protected static class Entry implements IEntry {
-        public final Attribute attribute;
+        public final AttributeAnomaly attributeAnomaly;
         public final int entityId;
         public int age;
 
-        public Entry(Attribute attribute, int entityId) {
-            this.attribute = attribute;
+        public Entry(AttributeAnomaly attributeAnomaly, int entityId) {
+            this.attributeAnomaly = attributeAnomaly;
             this.entityId = entityId;
             this.age = 0;
         }

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.masyumero.zenlesscraftzero.api.indicator.AbstractIndicator;
 import io.github.masyumero.zenlesscraftzero.client.ZCZClientUtil;
-import io.github.masyumero.zenlesscraftzero.common.anomaly.Attribute;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -27,8 +27,8 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
     public static final DamageIndicator INSTANCE = new DamageIndicator();
     private static final List<Entry> ENTRIES = new ArrayList<>();
 
-    public void add(Attribute attribute, double x, double y, double z, float damage, boolean isAnomalyEffect, boolean isCrit) {
-        this.add(new Entry(attribute, x, y, z, damage, isAnomalyEffect, isCrit));
+    public void add(AttributeAnomaly attributeAnomaly, double x, double y, double z, float damage, boolean isAnomalyEffect, boolean isCrit) {
+        this.add(new Entry(attributeAnomaly, x, y, z, damage, isAnomalyEffect, isCrit));
     }
 
     @Override
@@ -44,14 +44,14 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
             double x = entry.x + right.x * horizontalOffset - cameraPos.x;
             double y = entry.y + 0.4 + verticalOffset - cameraPos.y;
             double z = entry.z + right.z * horizontalOffset - cameraPos.z;
-            Attribute attribute = entry.attribute;
+            AttributeAnomaly attributeAnomaly = entry.attributeAnomaly;
             List<Component> components = new ArrayList<>();
             if (entry.isAnomalyEffect) {
-                components.add(Component.translatable(attribute.getAttributeEffect().getEffectLang().getTranslationKey()));
+                components.add(Component.translatable(attributeAnomaly.getAttributeEffect().getEffectLang().getTranslationKey()));
             }
             components.add(Component.literal(String.format("%.0f" + (entry.isCrit ? "!!" : ""), entry.damage)));
 
-            int color = (255 << 24) | attribute.getColor();
+            int color = (255 << 24) | attributeAnomaly.getColor();
 
             ZCZClientUtil.render(poseStack, () -> {
                 poseStack.translate(x, y, z);
@@ -88,7 +88,7 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
     }
 
     protected static class Entry implements IEntry {
-        public final Attribute attribute;
+        public final AttributeAnomaly attributeAnomaly;
         public final double x;
         public final double y;
         public final double z;
@@ -99,8 +99,8 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
         public final boolean isCrit;
         public int age;
 
-        public Entry(Attribute attribute, double x, double y, double z, float damage, boolean isAnomalyEffect, boolean isCrit) {
-            this.attribute = attribute;
+        public Entry(AttributeAnomaly attributeAnomaly, double x, double y, double z, float damage, boolean isAnomalyEffect, boolean isCrit) {
+            this.attributeAnomaly = attributeAnomaly;
             this.x = x;
             this.y = y;
             this.z = z;
