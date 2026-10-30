@@ -1,8 +1,8 @@
 package io.github.masyumero.zenlesscraftzero;
 
 import com.mojang.logging.LogUtils;
-import io.github.masyumero.zenlesscraftzero.common.equip.disc.DiscLevelStat;
 import io.github.masyumero.zenlesscraftzero.common.ZCZTags;
+import io.github.masyumero.zenlesscraftzero.common.equip.disc.DiscLevelStat;
 import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZItems;

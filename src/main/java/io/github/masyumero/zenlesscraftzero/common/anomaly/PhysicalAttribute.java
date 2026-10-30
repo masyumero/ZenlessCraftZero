@@ -3,7 +3,6 @@ package io.github.masyumero.zenlesscraftzero.common.anomaly;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
-import io.github.masyumero.zenlesscraftzero.api.ZenlessCraftZeroApi;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttributeAnomalyCapability;
