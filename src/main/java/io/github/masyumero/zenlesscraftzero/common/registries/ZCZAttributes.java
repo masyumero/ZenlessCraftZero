@@ -19,7 +19,11 @@ public class ZCZAttributes {
     public static final Set<RegistryObject<Attribute>> NORMAL_ATTRIBUTES = new HashSet<>();
 
     public static final RegistryObject<Attribute> ANOMALY_PROFICIENCY = ATTRIBUTE.register("anomaly_proficiency",
-            () -> new RangedAttribute(ZCZLang.ATTRIBUTE_ANOMALY_PROFICIENCY.getTranslationKey(), 70, 0, Double.MAX_VALUE));
+            () -> new RangedAttribute(ZCZLang.ATTRIBUTE_ANOMALY_PROFICIENCY.getTranslationKey(), 70, 0, 100000));
+    public static final RegistryObject<Attribute> ANOMALY_MASTERY = ATTRIBUTE.register("anomaly_mastery",
+            () -> new RangedAttribute(ZCZLang.ATTRIBUTE_ANOMALY_MASTERY.getTranslationKey(), 100, 0, 100000));
+    public static final RegistryObject<Attribute> ANOMALY_RESISTANCE = ATTRIBUTE.register("anomaly_resistance",
+            () -> new PercentBasedAttribute(ZCZLang.ATTRIBUTE_ANOMALY_RESISTANCE.getTranslationKey(), 0, 0, 100));
     public static final RegistryObject<Attribute> PHYSICAL_DMG_BONUS = ATTRIBUTE.register("physical_dmg_bonus",
             () -> new PercentBasedAttribute(ZCZLang.ATTRIBUTE_PHYSICAL_DMG_BONUS.getTranslationKey(), 0, 0, Double.MAX_VALUE));
     public static final RegistryObject<Attribute> CRIT_RATE = ATTRIBUTE.register("crit_rate",
@@ -28,7 +32,7 @@ public class ZCZAttributes {
             () -> new PercentBasedAttribute(ZCZLang.ATTRIBUTE_CRIT_DAMAGE.getTranslationKey(), 0.5, 0, Double.MAX_VALUE));
 
     static {
-        NORMAL_ATTRIBUTES.addAll(Set.of(ANOMALY_PROFICIENCY, PHYSICAL_DMG_BONUS, CRIT_RATE, CRIT_DAMAGE));
+        NORMAL_ATTRIBUTES.addAll(Set.of(ANOMALY_PROFICIENCY, ANOMALY_MASTERY, ANOMALY_RESISTANCE, PHYSICAL_DMG_BONUS, CRIT_RATE, CRIT_DAMAGE));
     }
 
     public static void register(IEventBus bus) {

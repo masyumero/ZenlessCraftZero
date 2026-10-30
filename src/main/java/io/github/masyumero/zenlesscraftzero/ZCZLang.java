@@ -21,6 +21,7 @@ public enum ZCZLang implements ILangEntry {
     DISC_STAT_CRIT_RATE("disc", "stat_crit_rate"),
     DISC_STAT_CRIT_DAMAGE("disc", "stat_crit_damage"),
     DISC_STAT_ANOMALY_PROFICIENCY("disc", "stat_anomaly_proficiency"),
+    DISC_STAT_ANOMALY_MASTERY("disc", "stat_anomaly_masterly"),
     DISC_STAT_PEN_RATIO("disc", "stat_pen_ratio"),
     DISC_STAT_PEN("disc", "stat_pen"),
     DISC_STAT_PHYSICAL_DMG("disc", "stat_physical_dmg"),
@@ -28,6 +29,8 @@ public enum ZCZLang implements ILangEntry {
     ATTRIBUTE_CRIT_RATE("attribute", "crit_rate"),
     ATTRIBUTE_CRIT_DAMAGE("attribute", "crit_damage"),
     ATTRIBUTE_ANOMALY_PROFICIENCY("attribute", "anomaly_proficiency"),
+    ATTRIBUTE_ANOMALY_MASTERY("attribute", "anomaly_mastery"),
+    ATTRIBUTE_ANOMALY_RESISTANCE("attribute", "anomaly_resistance"),
     ATTRIBUTE_PHYSICAL_DMG_BONUS("attribute", "physical_dmg_bonus"),
 
     ANOMALY_EFFECT_PHYSICAL("anomaly_effect", "physical"),

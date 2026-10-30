@@ -35,6 +35,8 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZLang.FREEDOM_BLUES_FOUR_PIECE_TOOLTIP, "When an EX Special Attack hits an enemy, reduce the target's Anomaly Buildup RES to the equipper's Attribute by 20% for 8s. This effect does not stack with others of the same attribute.", "『強化特殊スキル』が敵に命中すると、装備者の属性に応じてターゲットの対応する状態異常蓄積耐性-20%、継続時間8秒。同属性での重ね掛けは不可。");
 
         addAttribute(ZCZAttributes.ANOMALY_PROFICIENCY, "Anomaly Proficiency", "異常マスタリー", "Anomaly Proficiency enhances the damage inflicted by Attribute Anomalies. Each point in Anomaly Proficiency is equivalent to 1% of Attribute Anomaly DMG.", "異常マスタリーは状態異常によるダメージに影響する。異常マスタリー1Ptは、状態異常ダメージ1%に相当する。");
+        addAttribute(ZCZAttributes.ANOMALY_MASTERY, "Anomaly Mastery", "異常掌握", "Anomaly Mastery affects the efficiency of Anomaly Buildup. Each point in Anomaly Mastery is equivalent to 1% of Anomaly Buildup Rate.", "異常掌握は、状態異常蓄積値の蓄積効率に影響する。異常掌握1Ptは、状態異常蓄積効率1％に相当する。");
+        addAttribute(ZCZAttributes.ANOMALY_RESISTANCE, "Anomaly Resistance", "状態異常蓄積耐性", "", "");
         addAttribute(ZCZAttributes.PHYSICAL_DMG_BONUS, "Physical DMG Bonus", "物理属性ダメージボーナス", "", "");
         addAttribute(ZCZAttributes.CRIT_RATE, "CRIT Rate", "会心率", "", "");
         addAttribute(ZCZAttributes.CRIT_DAMAGE, "CRIT DMG", "会心ダメージ", "", "");
@@ -51,6 +53,7 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZLang.DISC_STAT_CRIT_RATE, "CRIT Rate %s %s%%", "会心率 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_CRIT_DAMAGE, "CRIT DMG %s %s%%", "会心ダメージ %s %s%%");
         addENJP(ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, "Anomaly Proficiency %s %s", "異常マスタリー %s %s");
+        addENJP(ZCZLang.DISC_STAT_ANOMALY_MASTERY, "Anomaly Mastery %s %s%%", "異常掌握  %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PEN_RATIO, "PEN Ratio %s %s%%", "貫通率 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PEN, "PEN %s %s%%", "貫通値 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PHYSICAL_DMG, "Physical DMG Bonus %s %s%%", "物理属性ダメージボーナス %s %s%%");

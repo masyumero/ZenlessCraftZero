@@ -23,9 +23,15 @@ public interface IAttributeAnomalyCapability {
 
     void addAnomalyBuildup(UUID uuid, IAttributeAnomaly attributeAnomaly, int buildup);
 
-    int getAnomalyLimit();
+    Map<IAttributeAnomaly, Integer> getAnomalyLimit();
 
-    void setAnomalyLimit(int limit);
+    void setAnomalyLimit(Map<IAttributeAnomaly, Integer> limit);
+
+    void addAnomalyLimit(IAttributeAnomaly attributeAnomaly, int limit);
+
+    Map<IAttributeAnomaly, Integer> getCooldowns();
+
+    void setCooldowns(Map<IAttributeAnomaly, Integer> cooldowns);
 
     CompoundTag serializeNBT();
 

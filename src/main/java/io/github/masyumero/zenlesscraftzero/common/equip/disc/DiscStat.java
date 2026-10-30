@@ -27,7 +27,7 @@ public enum DiscStat {
     PEN_RATIO("pen_ratio", ZCZLang.DISC_STAT_PEN_RATIO, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_5),
     PEN("pen", ZCZLang.DISC_STAT_PEN, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.ADDITION, true),
     PHYSICAL_DMG_BONUS("physical_dmg_bonus", ZCZLang.DISC_STAT_PHYSICAL_DMG, ZCZAttributes.PHYSICAL_DMG_BONUS, AttributeModifier.Operation.ADDITION, false, DiscPartition.PARTITION_5),
-    //ANOMALY_MASTERY("anomaly_mastery", ZCZLang.DISC_STAT_ANOMALY_MASTERY, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6),
+    ANOMALY_MASTERY("anomaly_mastery", ZCZLang.DISC_STAT_ANOMALY_MASTERY, ZCZAttributes.ANOMALY_MASTERY, AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6),
     //IMPACT("impact", ZCZLang.DISC_STAT_IMPACT, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6)
     //ENERGY_REGEN("energy_regen", ZCZLang.DISC_STAT_ENERGY_REGEN, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6)
     ;

@@ -36,9 +36,9 @@ public class DiscLevelStat {
         STAT.put(DiscRank.RANK_S, DiscStat.CRIT_DAMAGE, new double[]{0.12, 0.144, 0.168, 0.192, 0.216, 0.24, 0.264, 0.288, 0.312, 0.336, 0.36, 0.384, 0.408, 0.432, 0.456, 0.48});
         STAT.put(DiscRank.RANK_A, DiscStat.CRIT_DAMAGE, new double[]{0.08, 0.10, 0.12, 0.14, 0.16, 0.18, 0.20, 0.22, 0.24, 0.26, 0.28, 0.30, 0.32});
         STAT.put(DiscRank.RANK_B, DiscStat.CRIT_DAMAGE, new double[]{0.04, 0.053, 0.067, 0.08, 0.093, 0.107, 0.12, 0.133, 0.147, 0.16});
-//        STAT.put(DiscRank.RANK_S, DiscStat.ANOMALY_MASTERY, new double[]{0.075, 0.09, 0.105, 0.12, 0.135, 0.15, 0.165, 0.18, 0.195, 0.21, 0.225, 0.24, 0.255, 0.27, 0.285, 0.30});
-//        STAT.put(DiscRank.RANK_A, DiscStat.ANOMALY_MASTERY, new double[]{0.05, 0.0625, 0.075, 0.0875, 0.10, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.20});
-//        STAT.put(DiscRank.RANK_B, DiscStat.ANOMALY_MASTERY, new double[]{0.025, 0.033, 0.042, 0.05, 0.058, 0.067, 0.075, 0.083, 0.092, 0.10});
+        STAT.put(DiscRank.RANK_S, DiscStat.ANOMALY_MASTERY, new double[]{0.075, 0.09, 0.105, 0.12, 0.135, 0.15, 0.165, 0.18, 0.195, 0.21, 0.225, 0.24, 0.255, 0.27, 0.285, 0.30});
+        STAT.put(DiscRank.RANK_A, DiscStat.ANOMALY_MASTERY, new double[]{0.05, 0.0625, 0.075, 0.0875, 0.10, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.20});
+        STAT.put(DiscRank.RANK_B, DiscStat.ANOMALY_MASTERY, new double[]{0.025, 0.033, 0.042, 0.05, 0.058, 0.067, 0.075, 0.083, 0.092, 0.10});
         STAT.put(DiscRank.RANK_S, DiscStat.PEN_RATIO, new double[]{0.06, 0.072, 0.084, 0.096, 0.108, 0.12, 0.132, 0.144, 0.156, 0.168, 0.18, 0.192, 0.204, 0.216, 0.228, 0.24});
         STAT.put(DiscRank.RANK_A, DiscStat.PEN_RATIO, new double[]{0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16});
         STAT.put(DiscRank.RANK_B, DiscStat.PEN_RATIO, new double[]{0.02, 0.027, 0.033, 0.04, 0.047, 0.053, 0.06, 0.067, 0.073, 0.08});

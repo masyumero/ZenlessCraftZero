@@ -75,7 +75,7 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
                         }
                     }
                     var anomalyLimit = anomaly.getAnomalyLimit();
-                    ZCZClientUtil.drawTexture(poseStack, buffer, ANOMALY_INDICATORS.get(ZCZMathUtil.normalize(anomalyBuildup, anomalyLimit, 18)), -1.0f, 1.0f, color);
+                    ZCZClientUtil.drawTexture(poseStack, buffer, ANOMALY_INDICATORS.get(ZCZMathUtil.normalize(anomalyBuildup, anomalyLimit.getOrDefault(entry.attributeAnomaly, 0), 18)), -1.0f, 1.0f, color);
                 }, false);
             });
         }

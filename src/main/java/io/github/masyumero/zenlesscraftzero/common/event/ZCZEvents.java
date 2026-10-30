@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -38,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = ZenlessCraftZero.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ZCZEvents {
@@ -88,11 +91,30 @@ public class ZCZEvents {
     @SubscribeEvent
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         LivingEntity entity = event.getEntity();
-
+        Level level = entity.level();
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
         ZenlessCraftZeroApi.getAttributeAnomaly(entity, attributeAnomaly -> {
             var anomalyLimit = attributeAnomaly.getAnomalyLimit();
-            if (anomalyLimit == -1) {
-                attributeAnomaly.setAnomalyLimit((int) (30 * entity.getMaxHealth()));
+            if (anomalyLimit.isEmpty()) {
+                for (AttributeAnomaly anomaly : AttributeAnomaly.values()) {
+                    var limit = (int) (30 * entity.getMaxHealth());
+                    if (anomaly.equals(AttributeAnomaly.PHYSICAL)) {
+                        limit = (int) (limit * 1.2);
+                    }
+                    attributeAnomaly.addAnomalyLimit(anomaly, limit);
+                }
+            }
+            var attributes = attributeAnomaly.getAttribute();
+            if (!attributes.isEmpty()) {
+                for (Map.Entry<UUID, IAttributeAnomaly> entry : attributes.entrySet()) {
+                    UUID uuid = entry.getKey();
+                    IAttributeAnomaly attribute = entry.getValue();
+                    if (serverLevel.getEntity(uuid) instanceof LivingEntity livingEntity) {
+                        attribute.getAttributeEffect().anomalyEffectTick(livingEntity, entity, attributeAnomaly);
+                    }
+                }
             }
         }, true);
     }
@@ -110,31 +132,29 @@ public class ZCZEvents {
 
         if (!isAttributeEffect) {
             ZenlessCraftZeroApi.getAttributeAnomaly(entity, attributeAnomaly -> {
-                if (attacker != null) {
-                    attributeAnomaly.addAttribute(attacker.getUUID(), AttributeAnomaly.PHYSICAL);
-                    attributeAnomaly.addAnomalyBuildup(attacker.getUUID(), AttributeAnomaly.PHYSICAL, 500 / 16);
-                    var anomalyLimit = attributeAnomaly.getAnomalyLimit();
+                if (attacker instanceof LivingEntity livingEntity) {
+                    UUID attackerUUID = attacker.getUUID();
+                    attributeAnomaly.addAttribute(attackerUUID, AttributeAnomaly.PHYSICAL);
+
+                    AttributeInstance masterlyAttribute = livingEntity.getAttribute(ZCZAttributes.ANOMALY_MASTERY.get());
+                    double masterly = masterlyAttribute != null ? masterlyAttribute.getValue() : 0;
+                    int buildupEfficiency = 0;
+                    var buildupValue = 0;
+                    var targetAnomalyResistance = entity.getAttribute(ZCZAttributes.ANOMALY_RESISTANCE.get()).getValue();
+                    int buildup = (int) (100 * masterly / 100 * (100 + buildupEfficiency + buildupValue) / 100 * (1 - targetAnomalyResistance));
+                    attributeAnomaly.addAnomalyBuildup(attackerUUID, AttributeAnomaly.PHYSICAL, buildup);
+
                     var attributes = attributeAnomaly.getAttribute();
-                    if (!attributes.isEmpty()) {
-                        for (Map.Entry<UUID, IAttributeAnomaly> entry : attributes.entrySet()) {
-                            UUID uuid = entry.getKey();
-                            IAttributeAnomaly attribute = entry.getValue();
-                            if (serverLevel.getEntity(uuid) instanceof LivingEntity livingEntity) {
-                                var anomalyBuildup = attributeAnomaly.getAnomalyBuildup().get(uuid, attribute);
-                                if (anomalyBuildup != null) {
-                                    if (attribute.equals(AttributeAnomaly.PHYSICAL)) {
-                                        anomalyLimit = (int) (anomalyLimit * 1.2);
-                                    }
-                                    if (anomalyBuildup.equals(anomalyLimit)) {
-                                        attribute.getAttributeEffect().onAnomalyEffect(livingEntity, entity, event.getAmount());
-                                    }
-                                }
-                                attribute.getAttributeEffect().anomalyEffectTick(livingEntity, entity);
-                            }
+                    var attribute = attributes.get(attackerUUID);
+                    var anomalyLimit = attributeAnomaly.getAnomalyLimit().getOrDefault(attribute, 0);
+                    var anomalyBuildup = attributeAnomaly.getAnomalyBuildup().get(attackerUUID, attribute);
+                    if (anomalyBuildup != null) {
+                        if (anomalyBuildup.equals(anomalyLimit) && attributeAnomaly.getCooldowns().get(attribute) == 0) {
+                            attribute.getAttributeEffect().onAnomalyEffect(livingEntity, entity, attributeAnomaly, event.getAmount());
+                            attributeAnomaly.setCooldowns(Map.of(attribute, 3));
                         }
                     }
                 }
-                AttributeAnomalySyncPacket.syncAttributeAnomaly(entity);
             }, true);
 
             if (attacker instanceof LivingEntity livingAttacker) {

@@ -16,7 +16,8 @@ public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
 
     private final Map<UUID, IAttributeAnomaly> attribute = new HashMap<>();
     private final Table<UUID, IAttributeAnomaly, Integer> anomalyBuildup = HashBasedTable.create();
-    private int anomalyLimit = -1;
+    private final Map<IAttributeAnomaly, Integer> cooldowns = new HashMap<>();
+    private final Map<IAttributeAnomaly, Integer> anomalyLimit = new HashMap<>();
 
     public AttributeAnomalyCapability() {}
 
@@ -44,10 +45,27 @@ public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
     public void addAnomalyBuildup(UUID uuid, IAttributeAnomaly attributeAnomaly, int buildup) {
         Integer anomalyBuildup = this.anomalyBuildup.get(uuid, attributeAnomaly);
         if (anomalyBuildup == null) {
-            this.anomalyBuildup.put(uuid, attributeAnomaly, Math.min(buildup, anomalyLimit));
+            this.anomalyBuildup.put(uuid, attributeAnomaly, Math.min(buildup, anomalyLimit.getOrDefault(attributeAnomaly, -1)));
             return;
         }
-        this.anomalyBuildup.put(uuid, attributeAnomaly, Math.min(anomalyBuildup + buildup, anomalyLimit));
+        this.anomalyBuildup.put(uuid, attributeAnomaly, Math.min(anomalyBuildup + buildup, anomalyLimit.getOrDefault(attributeAnomaly, -1)));
+    }
+
+    @Override
+    public void setAnomalyLimit(Map<IAttributeAnomaly, Integer> limit) {
+        this.anomalyLimit.clear();
+        this.anomalyLimit.putAll(limit);
+    }
+
+    @Override
+    public void addAnomalyLimit(IAttributeAnomaly attributeAnomaly, int limit) {
+        this.anomalyLimit.put(attributeAnomaly, limit);
+    }
+
+    @Override
+    public void setCooldowns(Map<IAttributeAnomaly, Integer> cooldowns) {
+        this.cooldowns.clear();
+        this.cooldowns.putAll(cooldowns);
     }
 
     @Override
@@ -55,6 +73,8 @@ public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
         CompoundTag tag = new CompoundTag();
         CompoundTag attributeTag = new CompoundTag();
         CompoundTag buildupTag = new CompoundTag();
+        CompoundTag limitTag = new CompoundTag();
+        CompoundTag cooldownTag = new CompoundTag();
         this.getAttribute().forEach((uuid, attribute) -> {
             attributeTag.putString(uuid.toString(), attribute.getId());
         });
@@ -65,7 +85,14 @@ public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
             buildupTag.put(buildup.getRowKey().toString(), buildupAttributeTag);
         });
         tag.put("anomaly_buildup", buildupTag);
-        tag.putInt("anomaly_limit", this.getAnomalyLimit());
+        this.getCooldowns().forEach((anomaly, integer) -> {
+            cooldownTag.putInt(anomaly.getId(), integer);
+        });
+        tag.put("cooldowns", cooldownTag);
+        this.getAnomalyLimit().forEach((anomaly, integer) -> {
+            limitTag.putInt(anomaly.getId(), integer);
+        });
+        tag.put("anomaly_limit", limitTag);
         return tag;
     }
 
@@ -73,8 +100,12 @@ public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
     public void deserializeNBT(CompoundTag tag) {
         CompoundTag attributeTag = tag.getCompound("attribute_anomaly");
         CompoundTag buildupTag = tag.getCompound("anomaly_buildup");
+        CompoundTag cooldownTag = tag.getCompound("cooldowns");
+        CompoundTag limitTag = tag.getCompound("anomaly_limit");
         Map<UUID, IAttributeAnomaly> attributes = new HashMap<>();
         Table<UUID, IAttributeAnomaly, Integer> buildup = HashBasedTable.create();
+        Map<IAttributeAnomaly, Integer> cooldowns = new HashMap<>();
+        Map<IAttributeAnomaly, Integer> anomalyLimit = new HashMap<>();
         if (!attributeTag.isEmpty()) {
             attributeTag.getAllKeys().forEach(uuid -> {
                 attributes.put(UUID.fromString(uuid), AttributeAnomaly.getFromId(attributeTag.getString(uuid)));
@@ -91,6 +122,17 @@ public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
             });
             this.setAnomalyBuildup(buildup);
         }
-        this.setAnomalyLimit(tag.getInt("anomaly_limit"));
+        if (!cooldownTag.isEmpty()) {
+            cooldownTag.getAllKeys().forEach(attribute -> {
+                cooldowns.put(AttributeAnomaly.getFromId(attribute), cooldownTag.getInt(attribute));
+            });
+            this.setCooldowns(cooldowns);
+        }
+        if (!limitTag.isEmpty()) {
+            limitTag.getAllKeys().forEach(attribute -> {
+                anomalyLimit.put(AttributeAnomaly.getFromId(attribute), limitTag.getInt(attribute));
+            });
+        }
+        this.setAnomalyLimit(anomalyLimit);
     }
 }
