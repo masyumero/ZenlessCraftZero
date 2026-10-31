@@ -3,7 +3,6 @@ package io.github.masyumero.zenlesscraftzero.client.indicator;
 import com.google.common.collect.Table;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.masyumero.zenlesscraftzero.api.ZenlessCraftZeroApi;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.indicator.AbstractIndicator;
 import io.github.masyumero.zenlesscraftzero.client.ZCZClientUtil;
@@ -35,10 +34,10 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
 
     static {
         for (int i = 0; i < 39; i++) {
-            HEALTH_INDICATORS.add(ZCZUtil.rl("textures/health_indicator/" + i + ".png"));
+            HEALTH_INDICATORS.add(io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil.rl("textures/health_indicator/" + i + ".png"));
         }
         for (int i = 0; i < 19; i++) {
-            ANOMALY_INDICATORS.add(ZCZUtil.rl("textures/anomaly_indicator/"+ i +".png"));
+            ANOMALY_INDICATORS.add(io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil.rl("textures/anomaly_indicator/"+ i +".png"));
         }
     }
 
@@ -67,7 +66,7 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
                 poseStack.translate(x, y, z);
                 poseStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
                 ZCZClientUtil.drawTexture(poseStack, buffer, HEALTH_INDICATORS.get(ZCZMathUtil.normalize(livingEntity.getHealth(), livingEntity.getMaxHealth(), 38)), -1.0f, 1.0f, 0xFFFFFFFF);
-                ZenlessCraftZeroApi.getAttributeAnomaly(entity, anomaly -> {
+                ZCZUtil.getAttributeAnomaly(entity, anomaly -> {
                     int anomalyBuildup = 0;
                     for (Table.Cell<UUID, IAttributeAnomaly, Integer> buildup : anomaly.getAnomalyBuildup().cellSet()) {
                         if (entry.attributeAnomaly.equals(buildup.getColumnKey())) {

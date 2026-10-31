@@ -1,6 +1,7 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.entity;
 
 import com.google.common.collect.Table;
+import io.github.masyumero.zenlesscraftzero.api.ICapability;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
@@ -9,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @AutoRegisterCapability
-public interface IAttributeAnomalyCapability {
+public interface IAttributeAnomalyCapability extends ICapability {
 
     Map<UUID, IAttributeAnomaly> getAttribute();
 
@@ -32,8 +33,4 @@ public interface IAttributeAnomalyCapability {
     Map<IAttributeAnomaly, Integer> getCooldowns();
 
     void setCooldowns(Map<IAttributeAnomaly, Integer> cooldowns);
-
-    CompoundTag serializeNBT();
-
-    void deserializeNBT(CompoundTag tag);
 }

@@ -70,7 +70,7 @@ public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+        CompoundTag tag = IAttributeAnomalyCapability.super.serializeNBT();
         CompoundTag attributeTag = new CompoundTag();
         CompoundTag buildupTag = new CompoundTag();
         CompoundTag limitTag = new CompoundTag();

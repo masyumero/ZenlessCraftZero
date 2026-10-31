@@ -1,5 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.item.disc;
 
+import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttribute;
 import io.github.masyumero.zenlesscraftzero.common.capability.item.IEquipmentLevel;
 import io.github.masyumero.zenlesscraftzero.common.equip.disc.DiscStat;
 import lombok.Data;
@@ -63,7 +64,7 @@ public class Stats implements IStats {
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+        CompoundTag tag = IStats.super.serializeNBT();
         if (this.getMainStat() != null) {
             tag.putString("main_stat", this.getMainStat().getId());
         }

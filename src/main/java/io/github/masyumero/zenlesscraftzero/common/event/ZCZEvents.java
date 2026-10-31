@@ -1,12 +1,12 @@
 package io.github.masyumero.zenlesscraftzero.common.event;
 
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
-import io.github.masyumero.zenlesscraftzero.api.ZenlessCraftZeroApi;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.IDiscBonuses;
 import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.AttributeAnomalyProvider;
+import io.github.masyumero.zenlesscraftzero.common.capability.entity.AttributeProvider;
 import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
 import io.github.masyumero.zenlesscraftzero.common.network.s2c.AttributeAnomalySyncPacket;
@@ -93,7 +93,7 @@ public class ZCZEvents {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        ZenlessCraftZeroApi.getAttributeAnomaly(entity, attributeAnomaly -> {
+        ZCZUtil.getAttributeAnomaly(entity, attributeAnomaly -> {
             var anomalyLimit = attributeAnomaly.getAnomalyLimit();
             if (anomalyLimit.isEmpty()) {
                 for (AttributeAnomaly anomaly : AttributeAnomaly.values()) {
@@ -129,7 +129,7 @@ public class ZCZEvents {
         }
 
         if (!isAttributeEffect) {
-            ZenlessCraftZeroApi.getAttributeAnomaly(entity, attributeAnomaly -> {
+            ZCZUtil.getAttributeAnomaly(entity, attributeAnomaly -> {
                 if (attacker instanceof LivingEntity livingEntity) {
                     UUID attackerUUID = attacker.getUUID();
                     attributeAnomaly.addAttribute(attackerUUID, AttributeAnomaly.PHYSICAL);
@@ -177,10 +177,13 @@ public class ZCZEvents {
             return;
         }
 
-        var provider = new AttributeAnomalyProvider();
+        var attributeAnomalyProvider = new AttributeAnomalyProvider();
+        var attributeProvider = new AttributeProvider();
 
-        event.addCapability(ZCZUtil.rl("attribute_anomaly"), provider);
-        event.addListener(provider::invalidate);
+        event.addCapability(io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil.rl("attribute_anomaly"), attributeAnomalyProvider);
+        event.addCapability(io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil.rl("attribute"), attributeProvider);
+        event.addListener(attributeAnomalyProvider::invalidate);
+        event.addListener(attributeProvider::invalidate);
     }
 
     @SubscribeEvent
@@ -195,8 +198,8 @@ public class ZCZEvents {
         original.reviveCaps();
 
         try {
-            ZenlessCraftZeroApi.getAttributeAnomaly(original, oldAttributeAnomaly -> {
-                ZenlessCraftZeroApi.getAttributeAnomaly(clone, newAttributeAnomaly -> {
+            ZCZUtil.getAttributeAnomaly(original, oldAttributeAnomaly -> {
+                ZCZUtil.getAttributeAnomaly(clone, newAttributeAnomaly -> {
                     newAttributeAnomaly.deserializeNBT(oldAttributeAnomaly.serializeNBT());
                 }, true);
             }, false);

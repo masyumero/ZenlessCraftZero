@@ -39,7 +39,7 @@ public class EquipmentLevel implements IEquipmentLevel {
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+        CompoundTag tag = IEquipmentLevel.super.serializeNBT();
         tag.putInt("level", this.getLevel());
         tag.putInt("xp", this.getXp());
         tag.putInt("next_level_up_xp", this.getRequiredXp());

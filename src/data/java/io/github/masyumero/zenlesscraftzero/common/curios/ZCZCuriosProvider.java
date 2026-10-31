@@ -24,7 +24,6 @@ public class ZCZCuriosProvider extends CuriosDataProvider {
                     .size(1)
                     .addCosmetic(false)
                     .dropRule(ICurio.DropRule.ALWAYS_DROP)
-                    //.icon(ZCZUtil.rl("slot/" + slot.getId()))
                     .addValidator(ZCZUtil.curios("tag"));
 
             createEntities("players")
