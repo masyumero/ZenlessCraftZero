@@ -5,7 +5,9 @@ import io.github.masyumero.zenlesscraftzero.api.equip.Rank;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscRank;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSetting;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
+import io.github.masyumero.zenlesscraftzero.common.item.AttributeItem;
 import io.github.masyumero.zenlesscraftzero.common.item.DiscItem;
 import io.github.masyumero.zenlesscraftzero.common.item.RankItem;
 import net.minecraft.world.item.Item;
@@ -22,6 +24,7 @@ public class ZCZItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ZenlessCraftZero.MODID);
     public static final Map<DiscSetting, RegistryObject<Item>> DISCS = new HashMap<>();
+    public static final Map<AttributeAnomaly, RegistryObject<Item>> ATTRIBUTES = new HashMap<>();
 
     static {
         for (DiscSet set : DiscSet.values()) {
@@ -32,6 +35,9 @@ public class ZCZItems {
                 }
             }
         }
+        for (AttributeAnomaly attributeAnomaly : AttributeAnomaly.values()) {
+            ATTRIBUTES.put(attributeAnomaly, registerAttribute(attributeAnomaly));
+        }
     }
 
     public static final RegistryObject<Item> ICON = registerItem("icon", Item::new);
@@ -41,6 +47,10 @@ public class ZCZItems {
 
     private static RegistryObject<Item> registerDisc(DiscSetting setting) {
         return ITEMS.register(setting.set().getId() + "_" + setting.partition().getSlotNumber() + "_" + setting.rank().getId(), () -> new DiscItem(setting));
+    }
+
+    private static RegistryObject<Item> registerAttribute(AttributeAnomaly attributeAnomaly) {
+        return ITEMS.register(attributeAnomaly.getId(), () -> new AttributeItem(attributeAnomaly));
     }
 
     private static RegistryObject<Item> registerItem(String name, Function<Item.Properties, Item> item) {

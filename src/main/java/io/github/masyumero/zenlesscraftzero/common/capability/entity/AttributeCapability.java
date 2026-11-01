@@ -1,6 +1,5 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.entity;
 
-import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 @Setter
 public class AttributeCapability implements IAttribute {
 
-    private IAttributeAnomaly attributeAnomaly;
+    private AttributeAnomaly attributeAnomaly = AttributeAnomaly.PHYSICAL;
 
     @Override
     public CompoundTag serializeNBT() {

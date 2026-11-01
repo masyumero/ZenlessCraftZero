@@ -2,10 +2,8 @@ package io.github.masyumero.zenlesscraftzero.common;
 
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
 
 import java.util.HashMap;
@@ -15,7 +13,6 @@ public class ZCZTags {
 
     public static void init() {
         Items.init();
-        DamageTypes.init();
     }
 
     public static class Items {
@@ -32,23 +29,14 @@ public class ZCZTags {
             }
         }
 
+        public static final TagKey<Item> ATTRIBUTE_SLOT_ITEM = curiosTag("attribute_slot");
+
         private static TagKey<Item> curiosTag(String name) {
             return ItemTags.create(ZCZUtil.curios(name));
         }
 
         private static TagKey<Item> tag(String name) {
             return ItemTags.create(ZCZUtil.rl(name));
-        }
-    }
-
-    public static class DamageTypes {
-
-        public static void init() {}
-
-        public static final TagKey<DamageType> ATTRIBUTE_EFFECT = create("attribute_effect");
-
-        private static TagKey<DamageType> create(String name) {
-            return TagKey.create(Registries.DAMAGE_TYPE, ZCZUtil.rl(name));
         }
     }
 }

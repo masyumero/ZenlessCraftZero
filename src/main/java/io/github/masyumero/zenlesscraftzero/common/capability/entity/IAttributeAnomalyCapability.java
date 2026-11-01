@@ -3,7 +3,6 @@ package io.github.masyumero.zenlesscraftzero.common.capability.entity;
 import com.google.common.collect.Table;
 import io.github.masyumero.zenlesscraftzero.api.ICapability;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
 import java.util.Map;

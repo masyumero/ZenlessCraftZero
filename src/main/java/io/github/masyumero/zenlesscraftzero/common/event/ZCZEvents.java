@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 
 @Mod.EventBusSubscriber(modid = ZenlessCraftZero.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ZCZEvents {
@@ -123,52 +124,58 @@ public class ZCZEvents {
         Level level = entity.level();
         var attacker = event.getSource().getDirectEntity();
         boolean isAttributeEffect = event.getSource().is(ZCZDamageTypes.ATTRIBUTE_EFFECT);
-        boolean isCrit = false;
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
-        if (!isAttributeEffect) {
             ZCZUtil.getAttributeAnomaly(entity, attributeAnomaly -> {
                 if (attacker instanceof LivingEntity livingEntity) {
-                    UUID attackerUUID = attacker.getUUID();
-                    attributeAnomaly.addAttribute(attackerUUID, AttributeAnomaly.PHYSICAL);
-
-                    AttributeInstance masterlyAttribute = livingEntity.getAttribute(ZCZAttributes.ANOMALY_MASTERY.get());
-                    double masterly = masterlyAttribute != null ? masterlyAttribute.getValue() : 0;
-                    int buildupEfficiency = 0;
-                    var buildupValue = 0;
-                    var targetAnomalyResistance = entity.getAttribute(ZCZAttributes.ANOMALY_RESISTANCE.get()).getValue();
-                    int buildup = (int) (100 * masterly / 100 * (100 + buildupEfficiency + buildupValue) / 100 * (1 - targetAnomalyResistance));
-                    attributeAnomaly.addAnomalyBuildup(attackerUUID, AttributeAnomaly.PHYSICAL, buildup);
-
-                    var attributes = attributeAnomaly.getAttribute();
-                    var attribute = attributes.get(attackerUUID);
-                    var anomalyLimit = attributeAnomaly.getAnomalyLimit().getOrDefault(attribute, 0);
-                    var anomalyBuildup = attributeAnomaly.getAnomalyBuildup().get(attackerUUID, attribute);
-                    if (anomalyBuildup != null) {
-                        if (anomalyBuildup.equals(anomalyLimit) && attributeAnomaly.getCooldowns().get(attribute) == 0) {
-                            attribute.getAttributeEffect().onAnomalyEffect(livingEntity, entity, attributeAnomaly, event.getAmount());
-                            attributeAnomaly.setCooldowns(Map.of(attribute, 3));
+                    ZCZUtil.getAttribute(attacker, attackerAttribute -> {
+                        var attribute = attackerAttribute.getAttributeAnomaly();
+                        if (attribute != null) {
+                            UUID attackerUUID = attacker.getUUID();
+                            AttributeInstance masterlyAttribute = livingEntity.getAttribute(ZCZAttributes.ANOMALY_MASTERY.get());
+                            double masterly = masterlyAttribute != null ? masterlyAttribute.getValue() : 0;
+                            int buildupEfficiency = 0;
+                            var buildupValue = 0;
+                            var targetAnomalyResistance = entity.getAttribute(ZCZAttributes.ANOMALY_RESISTANCE.get()).getValue();
+                            int buildup = (int) (100 * masterly / 100 * (100 + buildupEfficiency + buildupValue) / 100 * (1 - targetAnomalyResistance));
+                            attributeAnomaly.addAttribute(attackerUUID, attribute);
+                            attributeAnomaly.addAnomalyBuildup(attackerUUID, attribute, buildup);
+                            var anomalyLimit = attributeAnomaly.getAnomalyLimit().getOrDefault(attribute, 0);
+                            var anomalyBuildup = attributeAnomaly.getAnomalyBuildup().get(attackerUUID, attribute);
+                            if (anomalyBuildup != null) {
+                                if (anomalyBuildup.equals(anomalyLimit) && attributeAnomaly.getCooldowns().get(attribute) == 0) {
+                                    attribute.getAttributeEffect().onAnomalyEffect(livingEntity, entity, attributeAnomaly, event.getAmount());
+                                    attributeAnomaly.setCooldowns(Map.of(attribute, 3));
+                                }
+                            }
                         }
-                    }
+                    });
+
                 }
             }, true);
 
-            if (attacker instanceof LivingEntity livingAttacker) {
-                var critRate = livingAttacker.getAttribute(ZCZAttributes.CRIT_RATE.get());
-                var critDamage = livingAttacker.getAttribute(ZCZAttributes.CRIT_DAMAGE.get());
-                if (critRate != null && critDamage != null) {
-                    if (Math.random() < critRate.getValue()) {
-                        event.setAmount((float) (event.getAmount() * (1 + critDamage.getValue())));
-                        isCrit = true;
+        BooleanSupplier isCrit = () -> {
+            if (!isAttributeEffect) {
+                if (attacker instanceof LivingEntity livingAttacker) {
+                    var critRate = livingAttacker.getAttribute(ZCZAttributes.CRIT_RATE.get());
+                    var critDamage = livingAttacker.getAttribute(ZCZAttributes.CRIT_DAMAGE.get());
+                    if (critRate != null && critDamage != null) {
+                        if (Math.random() < critRate.getValue()) {
+                            event.setAmount((float) (event.getAmount() * (1 + critDamage.getValue())));
+                            return true;
+                        }
                     }
                 }
             }
-        }
+            return false;
+        };
 
-        ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(AttributeAnomaly.PHYSICAL, entity.getId()));
-        ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(AttributeAnomaly.PHYSICAL, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit));
+        ZCZUtil.getAttribute(entity, attributeAnomaly -> {
+            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(attributeAnomaly.getAttributeAnomaly(), entity.getId()));
+            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(attributeAnomaly.getAttributeAnomaly(), entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit.getAsBoolean()));
+        });
     }
 
     @SubscribeEvent
@@ -180,8 +187,8 @@ public class ZCZEvents {
         var attributeAnomalyProvider = new AttributeAnomalyProvider();
         var attributeProvider = new AttributeProvider();
 
-        event.addCapability(io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil.rl("attribute_anomaly"), attributeAnomalyProvider);
-        event.addCapability(io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil.rl("attribute"), attributeProvider);
+        event.addCapability(ZCZUtil.rl("attribute_anomaly"), attributeAnomalyProvider);
+        event.addCapability(ZCZUtil.rl("attribute"), attributeProvider);
         event.addListener(attributeAnomalyProvider::invalidate);
         event.addListener(attributeProvider::invalidate);
     }
@@ -203,6 +210,11 @@ public class ZCZEvents {
                     newAttributeAnomaly.deserializeNBT(oldAttributeAnomaly.serializeNBT());
                 }, true);
             }, false);
+            ZCZUtil.getAttribute(original, oldAttribute -> {
+                ZCZUtil.getAttribute(clone, newAttribute -> {
+                    newAttribute.deserializeNBT(oldAttribute.serializeNBT());
+                });
+            });
         } finally {
             original.invalidateCaps();
         }

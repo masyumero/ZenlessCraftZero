@@ -34,10 +34,10 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
 
     static {
         for (int i = 0; i < 39; i++) {
-            HEALTH_INDICATORS.add(io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil.rl("textures/health_indicator/" + i + ".png"));
+            HEALTH_INDICATORS.add(ZCZUtil.rl("textures/health_indicator/" + i + ".png"));
         }
         for (int i = 0; i < 19; i++) {
-            ANOMALY_INDICATORS.add(io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil.rl("textures/anomaly_indicator/"+ i +".png"));
+            ANOMALY_INDICATORS.add(ZCZUtil.rl("textures/anomaly_indicator/"+ i +".png"));
         }
     }
 
@@ -60,13 +60,13 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
             double y = entity.getY() + entity.getBbHeight() + 0.1 - cameraPosition.y;
             double z = entity.getZ() - cameraPosition.z;
 
-            int color = (255 << 24) | entry.attributeAnomaly.getColor();
-
-            ZCZClientUtil.render(poseStack, () -> {
-                poseStack.translate(x, y, z);
-                poseStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
-                ZCZClientUtil.drawTexture(poseStack, buffer, HEALTH_INDICATORS.get(ZCZMathUtil.normalize(livingEntity.getHealth(), livingEntity.getMaxHealth(), 38)), -1.0f, 1.0f, 0xFFFFFFFF);
-                ZCZUtil.getAttributeAnomaly(entity, anomaly -> {
+            poseStack.pushPose();
+            poseStack.translate(x, y, z);
+            poseStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
+            ZCZClientUtil.drawTexture(poseStack, buffer, HEALTH_INDICATORS.get(ZCZMathUtil.normalize(livingEntity.getHealth(), livingEntity.getMaxHealth(), 38)), -1.0f, 1.0f, 0xFFFFFFFF);
+            var color = (255 << 24) | entry.attributeAnomaly.getColor();
+            ZCZUtil.getAttributeAnomaly(entity, anomaly -> {
+                if (!anomaly.getAnomalyBuildup().isEmpty()) {
                     int anomalyBuildup = 0;
                     for (Table.Cell<UUID, IAttributeAnomaly, Integer> buildup : anomaly.getAnomalyBuildup().cellSet()) {
                         if (entry.attributeAnomaly.equals(buildup.getColumnKey())) {
@@ -75,8 +75,8 @@ public class HealthIndicator extends AbstractIndicator<HealthIndicator.Entry> {
                     }
                     var anomalyLimit = anomaly.getAnomalyLimit();
                     ZCZClientUtil.drawTexture(poseStack, buffer, ANOMALY_INDICATORS.get(ZCZMathUtil.normalize(anomalyBuildup, anomalyLimit.getOrDefault(entry.attributeAnomaly, 0), 18)), -1.0f, 1.0f, color);
-                }, false);
-            });
+                }}, false);
+            poseStack.popPose();
         }
         buffer.endBatch();
         RenderSystem.enableDepthTest();

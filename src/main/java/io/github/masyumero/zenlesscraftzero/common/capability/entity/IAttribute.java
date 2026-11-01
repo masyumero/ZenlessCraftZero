@@ -1,13 +1,13 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.entity;
 
 import io.github.masyumero.zenlesscraftzero.api.ICapability;
-import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
 @AutoRegisterCapability
 public interface IAttribute extends ICapability {
 
-    IAttributeAnomaly getAttributeAnomaly();
+    AttributeAnomaly getAttributeAnomaly();
 
-    void setAttributeAnomaly(IAttributeAnomaly attribute);
+    void setAttributeAnomaly(AttributeAnomaly attribute);
 }

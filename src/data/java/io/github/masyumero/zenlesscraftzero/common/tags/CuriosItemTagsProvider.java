@@ -24,5 +24,8 @@ public class CuriosItemTagsProvider extends TagsProvider<Item> {
         ZCZItems.DISCS.forEach((setting, discItemRO) -> {
             tag(ZCZTags.Items.DISC_PARTITION_CURIOS_TAGS.get(setting.partition())).add(discItemRO.getKey());
         });
+        ZCZItems.ATTRIBUTES.forEach((attributeAnomaly, itemRegistryObject) -> {
+            tag(ZCZTags.Items.ATTRIBUTE_SLOT_ITEM).add(itemRegistryObject.getKey());
+        });
     }
 }

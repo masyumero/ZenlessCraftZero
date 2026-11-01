@@ -2,6 +2,7 @@ package io.github.masyumero.zenlesscraftzero.common.utils;
 
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
 import io.github.masyumero.zenlesscraftzero.common.capability.ZCZCapabilities;
+import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttribute;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttributeAnomalyCapability;
 import io.github.masyumero.zenlesscraftzero.common.network.s2c.AttributeAnomalySyncPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,12 @@ public class ZCZUtil {
             if (isSync) {
                 AttributeAnomalySyncPacket.syncAttributeAnomaly(entity);
             }
+        }
+    }
+
+    public static void getAttribute(Entity entity, Consumer<IAttribute> consumer) {
+        if (entity instanceof LivingEntity) {
+            entity.getCapability(ZCZCapabilities.ATTRIBUTE).ifPresent(consumer::accept);
         }
     }
 }

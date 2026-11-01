@@ -20,14 +20,6 @@ public class ZCZClientUtil {
         return bufferSource().getBuffer(type);
     }
 
-    public static void render(PoseStack poseStack, Runnable... runnables) {
-        poseStack.pushPose();
-        for (Runnable runnable : runnables) {
-            runnable.run();
-        }
-        poseStack.popPose();
-    }
-
     public static void drawTexture(PoseStack poseStack, MultiBufferSource.BufferSource buffer, ResourceLocation texture, float width, float height, int color) {
         Matrix4f matrix = poseStack.last().pose();
 

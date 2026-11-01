@@ -30,5 +30,15 @@ public class ZCZCuriosProvider extends CuriosDataProvider {
                     .addPlayer()
                     .addSlots(slot.getId());
         }
+
+        createSlot("attribute_slot")
+                .size(1)
+                .addCosmetic(false)
+                .dropRule(ICurio.DropRule.ALWAYS_DROP)
+                .addValidator(ZCZUtil.curios("tag"));
+
+        createEntities("players")
+                .addPlayer()
+                .addSlots("attribute_slot");
     }
 }

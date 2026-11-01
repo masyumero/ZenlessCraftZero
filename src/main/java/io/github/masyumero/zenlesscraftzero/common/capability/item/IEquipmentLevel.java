@@ -1,7 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.common.capability.item;
 
 import io.github.masyumero.zenlesscraftzero.api.ICapability;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
 @AutoRegisterCapability
