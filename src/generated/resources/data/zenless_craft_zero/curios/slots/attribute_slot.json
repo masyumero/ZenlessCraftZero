@@ -1,0 +1,8 @@
+{
+  "add_cosmetic": false,
+  "drop_rule": "ALWAYS_DROP",
+  "size": 1,
+  "validators": [
+    "curios:tag"
+  ]
+}

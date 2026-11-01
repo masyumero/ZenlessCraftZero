@@ -5,6 +5,7 @@
   "slots": [
     "partition_5",
     "partition_6",
+    "attribute_slot",
     "partition_1",
     "partition_2",
     "partition_3",
