@@ -21,6 +21,8 @@ public interface IAttributeAnomalyCapability extends ICapability {
 
     void setAnomalyBuildup(Table<UUID, IAttributeAnomaly, Integer> buildup);
 
+    void setAnomalyBuildup(UUID uuid, IAttributeAnomaly attributeAnomaly, int buildup);
+
     void addAnomalyBuildup(UUID uuid, IAttributeAnomaly attributeAnomaly, int buildup);
 
     Map<IAttributeAnomaly, Integer> getAnomalyLimit();

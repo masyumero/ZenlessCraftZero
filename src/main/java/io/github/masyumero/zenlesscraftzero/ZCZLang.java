@@ -32,9 +32,12 @@ public enum ZCZLang implements ILangEntry {
     ATTRIBUTE_ANOMALY_MASTERY("attribute", "anomaly_mastery"),
     ATTRIBUTE_ANOMALY_RESISTANCE("attribute", "anomaly_resistance"),
     ATTRIBUTE_PHYSICAL_DMG_BONUS("attribute", "physical_dmg_bonus"),
+    ATTRIBUTE_FIRE_DMG_BONUS("attribute", "fire_dmg_bonus"),
 
     ANOMALY_EFFECT_PHYSICAL("anomaly_effect", "physical"),
     ANOMALY_PHYSICAL("anomaly", "physical"),
+    ANOMALY_EFFECT_FIRE("anomaly_effect", "fire"),
+    ANOMALY_FIRE("anomaly", "fire"),
 
     ASTRAL_VOICE_TWO_PIECE_TOOLTIP("disc", "astral_voice_two_piece_tooltip"),
     ASTRAL_VOICE_FOUR_PIECE_TOOLTIP("disc", "astral_voice_four_piece_tooltip"),

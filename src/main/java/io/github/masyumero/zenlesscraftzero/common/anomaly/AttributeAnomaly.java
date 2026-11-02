@@ -6,9 +6,12 @@ import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
 import lombok.Getter;
 
+import java.util.function.Supplier;
+
 @Getter
 public enum AttributeAnomaly implements IAttributeAnomaly {
-    PHYSICAL("physical", ZCZLang.ANOMALY_PHYSICAL, new PhysicalAttribute(), 0xEDCC2C);
+    PHYSICAL("physical", ZCZLang.ANOMALY_PHYSICAL, PhysicalAttribute.INSTANCE, 0xEDCC2C),
+    FIRE("fire", ZCZLang.ANOMALY_FIRE, FireAttribute.INSTANCE, 0xFF5623),;
 
     private final String id;
     private final ILangEntry langEntry;

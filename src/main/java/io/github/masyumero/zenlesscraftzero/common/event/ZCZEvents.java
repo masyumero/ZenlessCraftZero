@@ -2,8 +2,10 @@ package io.github.masyumero.zenlesscraftzero.common.event;
 
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
+import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.sets.IDiscBonuses;
+import io.github.masyumero.zenlesscraftzero.api.mixin.IMixinDamageSource;
 import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.AttributeAnomalyProvider;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.AttributeProvider;
@@ -16,8 +18,11 @@ import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
 import io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil;
+import io.github.masyumero.zenlesscraftzero.mixin.MixinDamageSource;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -25,8 +30,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -111,23 +118,55 @@ public class ZCZEvents {
                     UUID uuid = entry.getKey();
                     IAttributeAnomaly attribute = entry.getValue();
                     if (serverLevel.getEntity(uuid) instanceof LivingEntity livingEntity) {
-                        attribute.getAttributeEffect().anomalyEffectTick(livingEntity, entity, attributeAnomaly);
+                        IAttributeEffect attributeEffect = attribute.getAttributeEffect();
+                        IAttributeEffect instance = attributeEffect.getInstance(entity);
+                        if (instance == null) {
+                            attributeEffect.addInstance(entity, attributeEffect.create());
+                            instance = attributeEffect.getInstance(entity);
+                        }
+                        instance.anomalyEffectTick(livingEntity, entity, attributeAnomaly);
                     }
                 }
             }
         }, true);
     }
 
-    @SubscribeEvent
-    public static void onLivingHurt(LivingHurtEvent event) {
-        LivingEntity entity = event.getEntity();
+    public static void onLivingDamage(LivingEntity entity, DamageSource source, float amount) {
         Level level = entity.level();
-        var attacker = event.getSource().getDirectEntity();
-        boolean isAttributeEffect = event.getSource().is(ZCZDamageTypes.ATTRIBUTE_EFFECT);
+        boolean isAttributeEffect = source.is(ZCZDamageTypes.ATTRIBUTE_EFFECT);
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
+        ZCZUtil.getAttribute(source.getDirectEntity(), attributeAnomaly -> {
+            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(attributeAnomaly.getAttributeAnomaly(), entity.getId()));
+            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(attributeAnomaly.getAttributeAnomaly(), entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), amount, isAttributeEffect, ((IMixinDamageSource)source).zenless_craft_zero$getCrit()));
+        });
+    }
+
+    @SubscribeEvent
+    public static void onLivingKnockback(LivingKnockBackEvent event) {
+        DamageSource source = event.getEntity().getLastDamageSource();
+        if (source != null) {
+            boolean isAttributeEffect = source.is(ZCZDamageTypes.ATTRIBUTE_EFFECT_DOT);
+            if (isAttributeEffect) {
+                event.cancel();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        LivingEntity entity = event.getEntity();
+        Level level = entity.level();
+        DamageSource source = event.getSource();
+        var attacker = source.getDirectEntity();
+        boolean isAttributeEffect = source.is(ZCZDamageTypes.ATTRIBUTE_EFFECT) || source.is(ZCZDamageTypes.ATTRIBUTE_EFFECT_DOT);
+        if (!(level instanceof ServerLevel)) {
+            return;
+        }
+
+        if (!isAttributeEffect) {
             ZCZUtil.getAttributeAnomaly(entity, attributeAnomaly -> {
                 if (attacker instanceof LivingEntity livingEntity) {
                     ZCZUtil.getAttribute(attacker, attackerAttribute -> {
@@ -146,36 +185,32 @@ public class ZCZEvents {
                             var anomalyBuildup = attributeAnomaly.getAnomalyBuildup().get(attackerUUID, attribute);
                             if (anomalyBuildup != null) {
                                 if (anomalyBuildup.equals(anomalyLimit) && attributeAnomaly.getCooldowns().get(attribute) == 0) {
-                                    attribute.getAttributeEffect().onAnomalyEffect(livingEntity, entity, attributeAnomaly, event.getAmount());
+                                    var damageSource = new DamageSource(attacker.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(ZCZDamageTypes.ATTRIBUTE_EFFECT), attacker);
+                                    IAttributeEffect attributeEffect = attribute.getAttributeEffect();
+                                    IAttributeEffect instance = attributeEffect.getInstance(entity);
+                                    if (instance == null) {
+                                        attributeEffect.addInstance(entity, attributeEffect.create());
+                                        instance = attributeEffect.getInstance(entity);
+                                    }
+                                    instance.onAnomalyEffect(livingEntity, entity, attributeAnomaly, damageSource);
                                     attributeAnomaly.setCooldowns(Map.of(attribute, 3));
                                 }
                             }
                         }
                     });
+                }}, true);
 
-                }
-            }, true);
-
-        BooleanSupplier isCrit = () -> {
-            if (!isAttributeEffect) {
-                if (attacker instanceof LivingEntity livingAttacker) {
-                    var critRate = livingAttacker.getAttribute(ZCZAttributes.CRIT_RATE.get());
-                    var critDamage = livingAttacker.getAttribute(ZCZAttributes.CRIT_DAMAGE.get());
-                    if (critRate != null && critDamage != null) {
-                        if (Math.random() < critRate.getValue()) {
-                            event.setAmount((float) (event.getAmount() * (1 + critDamage.getValue())));
-                            return true;
-                        }
+            if (attacker instanceof LivingEntity livingAttacker) {
+                var critRate = livingAttacker.getAttribute(ZCZAttributes.CRIT_RATE.get());
+                var critDamage = livingAttacker.getAttribute(ZCZAttributes.CRIT_DAMAGE.get());
+                if (critRate != null && critDamage != null) {
+                    if (Math.random() < critRate.getValue()) {
+                        event.setAmount((float) (event.getAmount() * (1 + critDamage.getValue())));
+                        ((IMixinDamageSource)source).zenless_craft_zero$setCrit(true);
                     }
                 }
             }
-            return false;
-        };
-
-        ZCZUtil.getAttribute(entity, attributeAnomaly -> {
-            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(attributeAnomaly.getAttributeAnomaly(), entity.getId()));
-            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(attributeAnomaly.getAttributeAnomaly(), entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), event.getAmount(), isAttributeEffect, isCrit.getAsBoolean()));
-        });
+        }
     }
 
     @SubscribeEvent

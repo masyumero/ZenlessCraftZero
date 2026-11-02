@@ -1,37 +1,47 @@
 package io.github.masyumero.zenlesscraftzero.common.anomaly;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
+import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
-import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttributeAnomalyCapability;
-import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
-import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PhysicalAttribute extends AbstractAttributeEffect {
 
+    public static final PhysicalAttribute INSTANCE = new PhysicalAttribute();
+    private static final Map<LivingEntity, IAttributeEffect> ATTRIBUTES = new HashMap<>();
+
     @Override
-    public void onAnomalyEffect(LivingEntity attacker, LivingEntity anomalyTarget, IAttributeAnomalyCapability targetCap, float damage) {
-        var anomalyProficiency = attacker.getAttribute(ZCZAttributes.ANOMALY_PROFICIENCY.get());
-        var dmgBonus = attacker.getAttribute(ZCZAttributes.PHYSICAL_DMG_BONUS.get());
-        if (anomalyProficiency != null && dmgBonus != null) {
-            float effectDamage = (float) (damage * (anomalyProficiency.getValue() / 100) * 7.13 * (1 + dmgBonus.getValue()));
-            var damageSource = new DamageSource(attacker.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(ZCZDamageTypes.ATTRIBUTE_EFFECT));
-            anomalyTarget.hurt(damageSource, effectDamage);
-            Table<UUID, IAttributeAnomaly, Integer> buildup = HashBasedTable.create();
-            buildup.put(attacker.getUUID(), AttributeAnomaly.PHYSICAL, 0);
-            targetCap.setAnomalyBuildup(buildup);
-        }
+    public float getEffectMultiplier() {
+        return 7.13f;
     }
+
+    @Override
+    public IAttributeAnomaly getAttributeAnomaly() {
+        return AttributeAnomaly.PHYSICAL;
+    }
+
 
     @Override
     public ILangEntry getEffectLang() {
         return ZCZLang.ANOMALY_EFFECT_PHYSICAL;
+    }
+
+    @Override
+    public void addInstance(LivingEntity entity, IAttributeEffect instance) {
+        ATTRIBUTES.put(entity, instance);
+    }
+
+    @Override
+    public PhysicalAttribute getInstance(LivingEntity entity) {
+        return (PhysicalAttribute) ATTRIBUTES.get(entity);
+    }
+
+    @Override
+    public PhysicalAttribute create() {
+        return new PhysicalAttribute();
     }
 }

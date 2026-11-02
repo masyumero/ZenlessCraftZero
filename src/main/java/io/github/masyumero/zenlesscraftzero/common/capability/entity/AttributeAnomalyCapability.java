@@ -42,6 +42,11 @@ public class AttributeAnomalyCapability implements IAttributeAnomalyCapability {
     }
 
     @Override
+    public void setAnomalyBuildup(UUID uuid, IAttributeAnomaly attributeAnomaly, int buildup) {
+        this.anomalyBuildup.put(uuid, attributeAnomaly, buildup);
+    }
+
+    @Override
     public void addAnomalyBuildup(UUID uuid, IAttributeAnomaly attributeAnomaly, int buildup) {
         Integer anomalyBuildup = this.anomalyBuildup.get(uuid, attributeAnomaly);
         if (anomalyBuildup == null) {

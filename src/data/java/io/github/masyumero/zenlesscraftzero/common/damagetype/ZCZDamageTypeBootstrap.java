@@ -13,5 +13,10 @@ public class ZCZDamageTypeBootstrap {
                 DamageScaling.NEVER,
                 0
         ));
+        context.register(ZCZDamageTypes.ATTRIBUTE_EFFECT_DOT, new DamageType(
+                "attribute_effect_dot",
+                DamageScaling.NEVER,
+                0
+        ));
     }
 }

@@ -49,7 +49,10 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
             if (entry.isAnomalyEffect) {
                 components.add(Component.translatable(Objects.requireNonNull(attributeAnomaly).getAttributeEffect().getEffectLang().getTranslationKey()));
             }
-            components.add(Component.literal(String.format("%.0f" + (entry.isCrit ? "!!" : ""), entry.damage)));
+            if (Math.floor(entry.damage) != 0) {
+                components.add(Component.literal(String.format("%.0f", entry.damage)).append(entry.isCrit ? "!!" : ""));
+            }
+
             int color = (255 << 24) | attributeAnomaly.getColor();
 
             poseStack.pushPose();

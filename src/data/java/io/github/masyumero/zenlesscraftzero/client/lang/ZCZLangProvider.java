@@ -38,6 +38,7 @@ public class ZCZLangProvider extends BaseLangProvider {
         addAttribute(ZCZAttributes.ANOMALY_MASTERY, "Anomaly Mastery", "異常掌握", "Anomaly Mastery affects the efficiency of Anomaly Buildup. Each point in Anomaly Mastery is equivalent to 1% of Anomaly Buildup Rate.", "異常掌握は、状態異常蓄積値の蓄積効率に影響する。異常掌握1Ptは、状態異常蓄積効率1％に相当する。");
         addAttribute(ZCZAttributes.ANOMALY_RESISTANCE, "Anomaly Resistance", "状態異常蓄積耐性", "", "");
         addAttribute(ZCZAttributes.PHYSICAL_DMG_BONUS, "Physical DMG Bonus", "物理属性ダメージボーナス", "", "");
+        addAttribute(ZCZAttributes.FIRE_DMG_BONUS, "Fire DMG Bonus", "炎属性ダメージボーナス", "", "");
         addAttribute(ZCZAttributes.CRIT_RATE, "CRIT Rate", "会心率", "", "");
         addAttribute(ZCZAttributes.CRIT_DAMAGE, "CRIT DMG", "会心ダメージ", "", "");
 
@@ -64,6 +65,8 @@ public class ZCZLangProvider extends BaseLangProvider {
 
         addENJP(ZCZLang.ANOMALY_EFFECT_PHYSICAL, "Assault!!", "強撃!!");
         addENJP(ZCZLang.ANOMALY_PHYSICAL, "Physical", "物理");
+        addENJP(ZCZLang.ANOMALY_EFFECT_FIRE, "Burn!!", "熱傷!!");
+        addENJP(ZCZLang.ANOMALY_FIRE, "Fire", "炎");
 
         addDisc(DiscSet.ASTRAL_VOICE, "Astral Voice", "静寂のアストラ");
         addDisc(DiscSet.FREEDOM_BLUES, "Freedom Blues", "フリーダム・ブルース");

@@ -134,8 +134,8 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 
     // Mixin
-    //annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-    //api(annotationProcessor(forge.mixinExtras.common.get()))
+    annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
+    api(annotationProcessor(forge.mixinExtras.common.get()))
 
     // Curios
     modCompileOnly(variantOf(forge.curios) { classifier("api") })
@@ -152,16 +152,16 @@ dependencies {
     modRuntimeOnly(forge.jade)
 }
 
-//mixin {
-//    add sourceSets.main, "${mod_id}.refmap.json"
-//    config "${mod_id}.mixins.json"
-//}
-//
-//jar {
-//    manifest.attributes([
-//            "MixinConfigs": "${mod_id}.mixins.json"
-//    ])
-//}
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
+}
+
+jar {
+    manifest.attributes([
+            "MixinConfigs": "${mod_id}.mixins.json"
+    ])
+}
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
