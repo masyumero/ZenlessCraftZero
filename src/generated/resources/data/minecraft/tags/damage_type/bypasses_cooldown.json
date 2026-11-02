@@ -3,6 +3,10 @@
     {
       "id": "zenless_craft_zero:attribute_effect",
       "required": false
+    },
+    {
+      "id": "zenless_craft_zero:attribute_effect_dot",
+      "required": false
     }
   ]
 }

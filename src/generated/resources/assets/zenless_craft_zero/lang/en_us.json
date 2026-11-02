@@ -1,5 +1,7 @@
 {
+  "anomaly.zenless_craft_zero.fire": "Fire",
   "anomaly.zenless_craft_zero.physical": "Physical",
+  "anomaly_effect.zenless_craft_zero.fire": "Burn!!",
   "anomaly_effect.zenless_craft_zero.physical": "Assault!!",
   "attribute.zenless_craft_zero.anomaly_mastery": "Anomaly Mastery",
   "attribute.zenless_craft_zero.anomaly_masterydesc": "Anomaly Mastery affects the efficiency of Anomaly Buildup. Each point in Anomaly Mastery is equivalent to 1% of Anomaly Buildup Rate.",
@@ -11,6 +13,8 @@
   "attribute.zenless_craft_zero.crit_damagedesc": "",
   "attribute.zenless_craft_zero.crit_rate": "CRIT Rate",
   "attribute.zenless_craft_zero.crit_ratedesc": "",
+  "attribute.zenless_craft_zero.fire_dmg_bonus": "Fire DMG Bonus",
+  "attribute.zenless_craft_zero.fire_dmg_bonusdesc": "",
   "attribute.zenless_craft_zero.physical_dmg_bonus": "Physical DMG Bonus",
   "attribute.zenless_craft_zero.physical_dmg_bonusdesc": "",
   "curios.identifier.partition_1": "Partition One",

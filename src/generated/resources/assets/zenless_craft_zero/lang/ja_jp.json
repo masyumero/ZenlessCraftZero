@@ -1,5 +1,7 @@
 {
+  "anomaly.zenless_craft_zero.fire": "炎",
   "anomaly.zenless_craft_zero.physical": "物理",
+  "anomaly_effect.zenless_craft_zero.fire": "熱傷!!",
   "anomaly_effect.zenless_craft_zero.physical": "強撃!!",
   "attribute.zenless_craft_zero.anomaly_mastery": "異常掌握",
   "attribute.zenless_craft_zero.anomaly_masterydesc": "異常掌握は、状態異常蓄積値の蓄積効率に影響する。異常掌握1Ptは、状態異常蓄積効率1％に相当する。",
@@ -11,6 +13,8 @@
   "attribute.zenless_craft_zero.crit_damagedesc": "",
   "attribute.zenless_craft_zero.crit_rate": "会心率",
   "attribute.zenless_craft_zero.crit_ratedesc": "",
+  "attribute.zenless_craft_zero.fire_dmg_bonus": "炎属性ダメージボーナス",
+  "attribute.zenless_craft_zero.fire_dmg_bonusdesc": "",
   "attribute.zenless_craft_zero.physical_dmg_bonus": "物理属性ダメージボーナス",
   "attribute.zenless_craft_zero.physical_dmg_bonusdesc": "",
   "curios.identifier.partition_1": "パーティション1",
