@@ -19,7 +19,6 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
@@ -27,8 +26,8 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
     public static final DamageIndicator INSTANCE = new DamageIndicator();
     private static final List<Entry> ENTRIES = new ArrayList<>();
 
-    public void add(IAttributeAnomaly attributeAnomaly, double x, double y, double z, float damage, boolean isAnomalyEffect, boolean isCrit) {
-        this.add(new Entry(attributeAnomaly, x, y, z, damage, isAnomalyEffect, isCrit));
+    public void add(IAttributeAnomaly attributeAnomaly, double x, double y, double z, float damage, boolean isAnomalyEffect, boolean isCrit, Component anomalyEffectMessage) {
+        this.add(new Entry(attributeAnomaly, x, y, z, damage, isAnomalyEffect, isCrit, anomalyEffectMessage));
     }
 
     @Override
@@ -47,7 +46,7 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
             IAttributeAnomaly attributeAnomaly = entry.attributeAnomaly;
             List<Component> components = new ArrayList<>();
             if (entry.isAnomalyEffect) {
-                components.add(Component.translatable(Objects.requireNonNull(attributeAnomaly).getAttributeEffect().getEffectLang().getTranslationKey()));
+                components.add(entry.anomalyEffectMessage);
             }
             if (Math.floor(entry.damage) != 0) {
                 components.add(Component.literal(String.format("%.0f", entry.damage)).append(entry.isCrit ? "!!" : ""));
@@ -99,9 +98,10 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
         public final double offsetY;
         public final boolean isAnomalyEffect;
         public final boolean isCrit;
+        public final Component anomalyEffectMessage;
         public int age;
 
-        public Entry(IAttributeAnomaly attributeAnomaly, double x, double y, double z, float damage, boolean isAnomalyEffect, boolean isCrit) {
+        public Entry(IAttributeAnomaly attributeAnomaly, double x, double y, double z, float damage, boolean isAnomalyEffect, boolean isCrit, Component anomalyEffectMessage) {
             this.attributeAnomaly = attributeAnomaly;
             this.x = x;
             this.y = y;
@@ -109,6 +109,7 @@ public class DamageIndicator extends AbstractIndicator<DamageIndicator.Entry> {
             this.damage = damage;
             this.isAnomalyEffect = isAnomalyEffect;
             this.isCrit = isCrit;
+            this.anomalyEffectMessage = anomalyEffectMessage;
             this.offsetX = (Math.random() * 2.0 - 1.0) * 0.5;
             this.offsetY = Math.random() * 1.1;
             this.age = 0;

@@ -17,6 +17,10 @@ public interface IAttributeEffect {
 
     void onAnomalyEffect(LivingEntity attacker, LivingEntity anomalyTarget, IAttributeAnomalyCapability targetCap, DamageSource source);
 
+    default void onCriticalHit(LivingEntity attacker, LivingEntity anomalyTarget, IAttributeAnomalyCapability targetCap) {}
+
+    default void onLivingDeath(LivingEntity attacker, LivingEntity anomalyTarget, IAttributeAnomalyCapability targetCap) {}
+
     void addInstance(LivingEntity entity, IAttributeEffect instance);
 
     IAttributeEffect getInstance(LivingEntity entity);

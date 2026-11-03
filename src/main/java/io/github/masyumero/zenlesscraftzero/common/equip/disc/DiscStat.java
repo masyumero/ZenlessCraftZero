@@ -4,6 +4,7 @@ import dev.shadowsoffire.attributeslib.api.ALObjects;
 import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import lombok.Getter;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -26,7 +27,9 @@ public enum DiscStat {
     ANOMALY_PROFICIENCY("anomaly_proficiency", ZCZLang.DISC_STAT_ANOMALY_PROFICIENCY, ZCZAttributes.ANOMALY_PROFICIENCY, AttributeModifier.Operation.ADDITION, true, DiscPartition.PARTITION_4),
     PEN_RATIO("pen_ratio", ZCZLang.DISC_STAT_PEN_RATIO, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_5),
     PEN("pen", ZCZLang.DISC_STAT_PEN, ALObjects.Attributes.ARMOR_PIERCE, AttributeModifier.Operation.ADDITION, true),
-    PHYSICAL_DMG_BONUS("physical_dmg_bonus", ZCZLang.DISC_STAT_PHYSICAL_DMG, ZCZAttributes.PHYSICAL_DMG_BONUS, AttributeModifier.Operation.ADDITION, false, DiscPartition.PARTITION_5),
+    PHYSICAL_DMG_BONUS(ZCZLang.DISC_STAT_PHYSICAL_DMG, AttributeAnomaly.PHYSICAL),
+    FIRE_DMG_BONUS(ZCZLang.DISC_STAT_FIRE_DMG, AttributeAnomaly.FIRE),
+    ICE_DMG_BONUS(ZCZLang.DISC_STAT_ICE_DMG, AttributeAnomaly.ICE),
     ANOMALY_MASTERY("anomaly_mastery", ZCZLang.DISC_STAT_ANOMALY_MASTERY, ZCZAttributes.ANOMALY_MASTERY, AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6),
     //IMPACT("impact", ZCZLang.DISC_STAT_IMPACT, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6)
     //ENERGY_REGEN("energy_regen", ZCZLang.DISC_STAT_ENERGY_REGEN, , AttributeModifier.Operation.MULTIPLY_BASE, false, DiscPartition.PARTITION_6)
@@ -62,6 +65,10 @@ public enum DiscStat {
 
     DiscStat(String id, ILangEntry translate, RegistryObject<Attribute> attributeRO, AttributeModifier.Operation operation, boolean isSubStat, DiscPartition... partitions) {
         this(id, translate, attributeRO.get(), operation, isSubStat, partitions);
+    }
+
+    DiscStat(ILangEntry translate, AttributeAnomaly anomaly) {
+        this(anomaly.getId() + "_dmg_bonus", translate, ZCZAttributes.ATTRIBUTE_DMG_BONUS.get(anomaly), AttributeModifier.Operation.ADDITION, false, DiscPartition.PARTITION_5);
     }
 
     public UUID getPartitionUUID(DiscPartition partition) {

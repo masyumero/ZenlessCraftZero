@@ -18,5 +18,10 @@ public class ZCZDamageTypeBootstrap {
                 DamageScaling.NEVER,
                 0
         ));
+        context.register(ZCZDamageTypes.SHATTER, new DamageType(
+                "shatter",
+                DamageScaling.NEVER,
+                0
+        ));
     }
 }

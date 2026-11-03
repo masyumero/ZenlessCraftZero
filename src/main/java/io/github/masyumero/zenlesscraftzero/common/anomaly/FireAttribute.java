@@ -4,12 +4,12 @@ import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
-import io.github.masyumero.zenlesscraftzero.api.mixin.IMixinDamageSource;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttributeAnomalyCapability;
 import io.github.masyumero.zenlesscraftzero.common.network.s2c.DamageIndicatorPacket;
 import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,7 +48,7 @@ public class FireAttribute extends AbstractAttributeEffect {
                 if (durationTick == 200) {
                     resetBuildup(attacker, targetCap);
                     if (anomalyTarget.level() instanceof ServerLevel level) {
-                        ZCZS2CNetwork.sendIndicator(level, anomalyTarget.getX(), anomalyTarget.getY() + anomalyTarget.getBbHeight(), anomalyTarget.getZ(), 64.0, new DamageIndicatorPacket((AttributeAnomaly) getAttributeAnomaly(), anomalyTarget.getX(), anomalyTarget.getY() + anomalyTarget.getBbHeight(), anomalyTarget.getZ(), 0, true, false));
+                        ZCZS2CNetwork.sendIndicator(level, anomalyTarget.getX(), anomalyTarget.getY() + anomalyTarget.getBbHeight(), anomalyTarget.getZ(), 64.0, new DamageIndicatorPacket((AttributeAnomaly) getAttributeAnomaly(), anomalyTarget.getX(), anomalyTarget.getY() + anomalyTarget.getBbHeight(), anomalyTarget.getZ(), 0, true, false, Component.translatable(getEffectLang().getTranslationKey())));
                     }
                 }
                 durationTick = Math.max(durationTick - 10, 0);

@@ -25,6 +25,8 @@ public enum ZCZLang implements ILangEntry {
     DISC_STAT_PEN_RATIO("disc", "stat_pen_ratio"),
     DISC_STAT_PEN("disc", "stat_pen"),
     DISC_STAT_PHYSICAL_DMG("disc", "stat_physical_dmg"),
+    DISC_STAT_FIRE_DMG("disc", "stat_fire_dmg"),
+    DISC_STAT_ICE_DMG("disc", "stat_ice_dmg"),
 
     ATTRIBUTE_CRIT_RATE("attribute", "crit_rate"),
     ATTRIBUTE_CRIT_DAMAGE("attribute", "crit_damage"),
@@ -33,11 +35,15 @@ public enum ZCZLang implements ILangEntry {
     ATTRIBUTE_ANOMALY_RESISTANCE("attribute", "anomaly_resistance"),
     ATTRIBUTE_PHYSICAL_DMG_BONUS("attribute", "physical_dmg_bonus"),
     ATTRIBUTE_FIRE_DMG_BONUS("attribute", "fire_dmg_bonus"),
+    ATTRIBUTE_ICE_DMG_BONUS("attribute", "ice_dmg_bonus"),
 
     ANOMALY_EFFECT_PHYSICAL("anomaly_effect", "physical"),
     ANOMALY_PHYSICAL("anomaly", "physical"),
     ANOMALY_EFFECT_FIRE("anomaly_effect", "fire"),
     ANOMALY_FIRE("anomaly", "fire"),
+    ANOMALY_EFFECT_ICE("anomaly_effect", "ice"),
+    ANOMALY_EFFECT_ICE_SHATTER("anomaly_effect", "ice_shatter"),
+    ANOMALY_ICE("anomaly", "ice"),
 
     ASTRAL_VOICE_TWO_PIECE_TOOLTIP("disc", "astral_voice_two_piece_tooltip"),
     ASTRAL_VOICE_FOUR_PIECE_TOOLTIP("disc", "astral_voice_four_piece_tooltip"),

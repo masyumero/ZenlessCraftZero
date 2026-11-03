@@ -4,6 +4,7 @@ import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscPartition;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscRank;
 import io.github.masyumero.zenlesscraftzero.api.equip.disc.DiscSetting;
+import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.common.equip.disc.sets.DiscSet;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZItems;
@@ -37,8 +38,10 @@ public class ZCZLangProvider extends BaseLangProvider {
         addAttribute(ZCZAttributes.ANOMALY_PROFICIENCY, "Anomaly Proficiency", "異常マスタリー", "Anomaly Proficiency enhances the damage inflicted by Attribute Anomalies. Each point in Anomaly Proficiency is equivalent to 1% of Attribute Anomaly DMG.", "異常マスタリーは状態異常によるダメージに影響する。異常マスタリー1Ptは、状態異常ダメージ1%に相当する。");
         addAttribute(ZCZAttributes.ANOMALY_MASTERY, "Anomaly Mastery", "異常掌握", "Anomaly Mastery affects the efficiency of Anomaly Buildup. Each point in Anomaly Mastery is equivalent to 1% of Anomaly Buildup Rate.", "異常掌握は、状態異常蓄積値の蓄積効率に影響する。異常掌握1Ptは、状態異常蓄積効率1％に相当する。");
         addAttribute(ZCZAttributes.ANOMALY_RESISTANCE, "Anomaly Resistance", "状態異常蓄積耐性", "", "");
-        addAttribute(ZCZAttributes.PHYSICAL_DMG_BONUS, "Physical DMG Bonus", "物理属性ダメージボーナス", "", "");
-        addAttribute(ZCZAttributes.FIRE_DMG_BONUS, "Fire DMG Bonus", "炎属性ダメージボーナス", "", "");
+        addAttribute(ZCZAttributes.ATTRIBUTE_DMG_BONUS.get(AttributeAnomaly.PHYSICAL), "Physical DMG Bonus", "物理属性ダメージボーナス", "", "");
+        addAttribute(ZCZAttributes.ATTRIBUTE_DMG_BONUS.get(AttributeAnomaly.FIRE), "Fire DMG Bonus", "炎属性ダメージボーナス", "", "");
+        addAttribute(ZCZAttributes.ATTRIBUTE_DMG_BONUS.get(AttributeAnomaly.ICE), "Ice DMG Bonus", "氷属性ダメージボーナス", "", "");
+
         addAttribute(ZCZAttributes.CRIT_RATE, "CRIT Rate", "会心率", "", "");
         addAttribute(ZCZAttributes.CRIT_DAMAGE, "CRIT DMG", "会心ダメージ", "", "");
 
@@ -58,6 +61,8 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZLang.DISC_STAT_PEN_RATIO, "PEN Ratio %s %s%%", "貫通率 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PEN, "PEN %s %s%%", "貫通値 %s %s%%");
         addENJP(ZCZLang.DISC_STAT_PHYSICAL_DMG, "Physical DMG Bonus %s %s%%", "物理属性ダメージボーナス %s %s%%");
+        addENJP(ZCZLang.DISC_STAT_FIRE_DMG, "Fire DMG Bonus %s %s%%", "炎属性ダメージボーナス %s %s%%");
+        addENJP(ZCZLang.DISC_STAT_ICE_DMG, "Ice DMG Bonus %s %s%%", "氷属性ダメージボーナス %s %s%%");
 
         addENJP(ZCZItems.MOLDED_PLATING_AGENT.get(), "Molded Plating Agent", "可塑化助剤");
         addENJP(ZCZItems.CRYSTALLIZED_PLATING_AGENT.get(), "Crystallized Plating Agent", "結晶化助剤");
@@ -67,6 +72,9 @@ public class ZCZLangProvider extends BaseLangProvider {
         addENJP(ZCZLang.ANOMALY_PHYSICAL, "Physical", "物理");
         addENJP(ZCZLang.ANOMALY_EFFECT_FIRE, "Burn!!", "熱傷!!");
         addENJP(ZCZLang.ANOMALY_FIRE, "Fire", "炎");
+        addENJP(ZCZLang.ANOMALY_EFFECT_ICE, "Freeze!!", "凍結!!");
+        addENJP(ZCZLang.ANOMALY_EFFECT_ICE_SHATTER, "Shatter!!", "砕氷!!");
+        addENJP(ZCZLang.ANOMALY_ICE, "Ice", "氷");
 
         addDisc(DiscSet.ASTRAL_VOICE, "Astral Voice", "静寂のアストラ");
         addDisc(DiscSet.FREEDOM_BLUES, "Freedom Blues", "フリーダム・ブルース");

@@ -24,7 +24,6 @@ public class PhysicalAttribute extends AbstractAttributeEffect {
         return AttributeAnomaly.PHYSICAL;
     }
 
-
     @Override
     public ILangEntry getEffectLang() {
         return ZCZLang.ANOMALY_EFFECT_PHYSICAL;

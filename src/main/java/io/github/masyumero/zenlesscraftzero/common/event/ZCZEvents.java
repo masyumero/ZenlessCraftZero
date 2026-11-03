@@ -1,5 +1,6 @@
 package io.github.masyumero.zenlesscraftzero.common.event;
 
+import io.github.masyumero.zenlesscraftzero.ZCZLang;
 import io.github.masyumero.zenlesscraftzero.ZenlessCraftZero;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
@@ -18,8 +19,8 @@ import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
 import io.github.masyumero.zenlesscraftzero.common.utils.ZCZUtil;
-import io.github.masyumero.zenlesscraftzero.mixin.MixinDamageSource;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,11 +31,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -46,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = ZenlessCraftZero.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ZCZEvents {
@@ -82,6 +84,16 @@ public class ZCZEvents {
         });
     }
 
+    private static void dispatchAttributeEffect(LivingEntity entity, IAttributeAnomaly attribute, Consumer<IAttributeEffect> action) {
+        IAttributeEffect attributeEffect = attribute.getAttributeEffect();
+        IAttributeEffect instance = attributeEffect.getInstance(entity);
+        if (instance == null) {
+            attributeEffect.addInstance(entity, attributeEffect.create());
+            instance = attributeEffect.getInstance(entity);
+        }
+        action.accept(instance);
+    }
+
     @SubscribeEvent
     public static void onAttackEntity(AttackEntityEvent event) {
         Entity entity = event.getEntity();
@@ -92,6 +104,55 @@ public class ZCZEvents {
                 }
             });
         }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+        Entity entity = event.getEntity();
+        Level level = entity.level();
+        Entity attacker = event.getSource().getDirectEntity();
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        ZCZUtil.getAttributeAnomaly(entity, attributeAnomaly -> {
+            var attributes = attributeAnomaly.getAttribute();
+            if (!attributes.isEmpty() && attacker != null) {
+                for (Map.Entry<UUID, IAttributeAnomaly> entry : attributes.entrySet()) {
+                    IAttributeAnomaly attribute = entry.getValue();
+                    if (entity instanceof LivingEntity livingEntity) {
+                        dispatchAttributeEffect(livingEntity, attribute, instance -> {
+                            instance.onLivingDeath((LivingEntity) event.getSource().getDirectEntity(), livingEntity, attributeAnomaly);
+                        });
+                    }
+                }
+            }
+        }, true);
+    }
+
+    @SubscribeEvent
+    public static void onCriticalHit(CriticalHitEvent event) {
+        Entity entity = event.getTarget();
+        Level level = entity.level();
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        ZCZUtil.getAttributeAnomaly(entity, attributeAnomaly -> {
+            var attributes = attributeAnomaly.getAttribute();
+            if (!attributes.isEmpty()) {
+                for (Map.Entry<UUID, IAttributeAnomaly> entry : attributes.entrySet()) {
+                    UUID uuid = entry.getKey();
+                    IAttributeAnomaly attribute = entry.getValue();
+                    if (uuid.equals(event.getEntity().getUUID())) {
+                        if (entity instanceof LivingEntity livingEntity) {
+                            dispatchAttributeEffect(livingEntity, attribute, instance -> {
+                                instance.onCriticalHit(event.getEntity(), livingEntity, attributeAnomaly);
+                            });
+                        }
+                    }
+                }
+            }
+        }, true);
     }
 
     @SubscribeEvent
@@ -118,13 +179,9 @@ public class ZCZEvents {
                     UUID uuid = entry.getKey();
                     IAttributeAnomaly attribute = entry.getValue();
                     if (serverLevel.getEntity(uuid) instanceof LivingEntity livingEntity) {
-                        IAttributeEffect attributeEffect = attribute.getAttributeEffect();
-                        IAttributeEffect instance = attributeEffect.getInstance(entity);
-                        if (instance == null) {
-                            attributeEffect.addInstance(entity, attributeEffect.create());
-                            instance = attributeEffect.getInstance(entity);
-                        }
-                        instance.anomalyEffectTick(livingEntity, entity, attributeAnomaly);
+                        dispatchAttributeEffect(entity, attribute, instance -> {
+                            instance.anomalyEffectTick(livingEntity, entity, attributeAnomaly);
+                        });
                     }
                 }
             }
@@ -134,13 +191,19 @@ public class ZCZEvents {
     public static void onLivingDamage(LivingEntity entity, DamageSource source, float amount) {
         Level level = entity.level();
         boolean isAttributeEffect = source.is(ZCZDamageTypes.ATTRIBUTE_EFFECT);
+        boolean isShatter = source.is(ZCZDamageTypes.SHATTER);
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
         ZCZUtil.getAttribute(source.getDirectEntity(), attributeAnomaly -> {
-            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(attributeAnomaly.getAttributeAnomaly(), entity.getId()));
-            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(attributeAnomaly.getAttributeAnomaly(), entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), amount, isAttributeEffect, ((IMixinDamageSource)source).zenless_craft_zero$getCrit()));
+            var attribute = attributeAnomaly.getAttributeAnomaly();
+            ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new HealthIndicatorPacket(attribute, entity.getId()));
+            if (!isShatter) {
+                ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(attribute, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), amount, isAttributeEffect, ((IMixinDamageSource) source).zenless_craft_zero$getCrit(), Component.translatable(attribute.getLangEntry().getTranslationKey())));
+            } else {
+                ZCZS2CNetwork.sendIndicator(serverLevel, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), 64.0, new DamageIndicatorPacket(attribute, entity.getX(), entity.getY() + entity.getBbHeight(), entity.getZ(), amount, true, ((IMixinDamageSource) source).zenless_craft_zero$getCrit(), Component.translatable(ZCZLang.ANOMALY_EFFECT_ICE_SHATTER.getTranslationKey())));
+            }
         });
     }
 
@@ -186,13 +249,9 @@ public class ZCZEvents {
                             if (anomalyBuildup != null) {
                                 if (anomalyBuildup.equals(anomalyLimit) && attributeAnomaly.getCooldowns().get(attribute) == 0) {
                                     var damageSource = new DamageSource(attacker.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(ZCZDamageTypes.ATTRIBUTE_EFFECT), attacker);
-                                    IAttributeEffect attributeEffect = attribute.getAttributeEffect();
-                                    IAttributeEffect instance = attributeEffect.getInstance(entity);
-                                    if (instance == null) {
-                                        attributeEffect.addInstance(entity, attributeEffect.create());
-                                        instance = attributeEffect.getInstance(entity);
-                                    }
-                                    instance.onAnomalyEffect(livingEntity, entity, attributeAnomaly, damageSource);
+                                    dispatchAttributeEffect(entity, attribute, instance -> {
+                                        instance.onAnomalyEffect(livingEntity, entity, attributeAnomaly, damageSource);
+                                    });
                                     attributeAnomaly.setCooldowns(Map.of(attribute, 3));
                                 }
                             }

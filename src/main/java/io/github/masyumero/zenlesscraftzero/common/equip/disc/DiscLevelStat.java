@@ -43,6 +43,8 @@ public class DiscLevelStat {
         STAT.put(DiscRank.RANK_A, DiscStat.PEN_RATIO, new double[]{0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16});
         STAT.put(DiscRank.RANK_B, DiscStat.PEN_RATIO, new double[]{0.02, 0.027, 0.033, 0.04, 0.047, 0.053, 0.06, 0.067, 0.073, 0.08});
         putAttributeBonus(DiscStat.PHYSICAL_DMG_BONUS);
+        putAttributeBonus(DiscStat.FIRE_DMG_BONUS);
+        putAttributeBonus(DiscStat.ICE_DMG_BONUS);
         STAT.put(DiscRank.RANK_S, DiscStat.ANOMALY_PROFICIENCY, new double[]{23, 27, 32, 36, 41, 46, 50, 55, 59, 64, 69, 73, 78, 82, 87, 92});
         STAT.put(DiscRank.RANK_A, DiscStat.ANOMALY_PROFICIENCY, new double[]{15, 18, 22, 26, 30, 33, 37, 41, 45, 48, 52, 56, 60});
         STAT.put(DiscRank.RANK_B, DiscStat.ANOMALY_PROFICIENCY, new double[]{8, 10, 13, 16, 18, 21, 24, 26, 29, 32});

@@ -4,6 +4,7 @@ import io.github.masyumero.zenlesscraftzero.api.network.IZCZPacket;
 import io.github.masyumero.zenlesscraftzero.client.indicator.DamageIndicator;
 import io.github.masyumero.zenlesscraftzero.common.anomaly.AttributeAnomaly;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent.Context;
@@ -11,12 +12,12 @@ import net.minecraftforge.network.NetworkEvent.Context;
 import java.util.function.Supplier;
 
 public record DamageIndicatorPacket(AttributeAnomaly attributeAnomaly, double x, double y, double z, float damage,
-                                    boolean isAnomalyEffect, boolean isCrit) implements IZCZPacket<DamageIndicatorPacket> {
+                                    boolean isAnomalyEffect, boolean isCrit, Component anomalyEffectMessage) implements IZCZPacket<DamageIndicatorPacket> {
 
     public static final DamageIndicatorPacket INSTANCE = new DamageIndicatorPacket();
 
     private DamageIndicatorPacket() {
-        this(null, 0, 0, 0, 0, false, false);
+        this(null, 0, 0, 0, 0, false, false, Component.empty());
     }
 
     @Override
@@ -28,11 +29,12 @@ public record DamageIndicatorPacket(AttributeAnomaly attributeAnomaly, double x,
         buffer.writeFloat(packet.damage);
         buffer.writeBoolean(packet.isAnomalyEffect);
         buffer.writeBoolean(packet.isCrit);
+        buffer.writeComponent(packet.anomalyEffectMessage);
     }
 
     @Override
     public DamageIndicatorPacket decode(FriendlyByteBuf buffer) {
-        return new DamageIndicatorPacket(buffer.readEnum(AttributeAnomaly.class), buffer.readDouble(), buffer.readDouble(), buffer.readDouble(), buffer.readFloat(), buffer.readBoolean(), buffer.readBoolean());
+        return new DamageIndicatorPacket(buffer.readEnum(AttributeAnomaly.class), buffer.readDouble(), buffer.readDouble(), buffer.readDouble(), buffer.readFloat(), buffer.readBoolean(), buffer.readBoolean(), buffer.readComponent());
     }
 
     @Override
@@ -40,7 +42,7 @@ public record DamageIndicatorPacket(AttributeAnomaly attributeAnomaly, double x,
         Context context = supplier.get();
 
         context.enqueueWork(() ->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> DamageIndicator.INSTANCE.add(packet.attributeAnomaly, packet.x, packet.y, packet.z, packet.damage, packet.isAnomalyEffect, packet.isCrit))
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> DamageIndicator.INSTANCE.add(packet.attributeAnomaly, packet.x, packet.y, packet.z, packet.damage, packet.isAnomalyEffect, packet.isCrit, packet.anomalyEffectMessage))
         );
 
         context.setPacketHandled(true);
