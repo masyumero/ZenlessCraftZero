@@ -13,7 +13,7 @@ public interface IAttributeEffect {
 
     int getDuration();
 
-    int setDuration(int duration);
+    void setDuration(int duration);
 
     IAttributeAnomaly getAttributeAnomaly();
 
