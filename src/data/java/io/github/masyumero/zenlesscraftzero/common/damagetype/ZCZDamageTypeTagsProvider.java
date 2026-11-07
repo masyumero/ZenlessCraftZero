@@ -25,5 +25,7 @@ public class ZCZDamageTypeTagsProvider extends DamageTypeTagsProvider {
         tag(DamageTypeTags.BYPASSES_COOLDOWN).addOptional(ZCZDamageTypes.ATTRIBUTE_EFFECT_DOT.location());
         tag(DamageTypeTags.BYPASSES_INVULNERABILITY).addOptional(ZCZDamageTypes.SHATTER.location());
         tag(DamageTypeTags.BYPASSES_COOLDOWN).addOptional(ZCZDamageTypes.SHATTER.location());
+        tag(DamageTypeTags.BYPASSES_INVULNERABILITY).addOptional(ZCZDamageTypes.DISORDER.location());
+        tag(DamageTypeTags.BYPASSES_COOLDOWN).addOptional(ZCZDamageTypes.DISORDER.location());
     }
 }

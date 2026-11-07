@@ -11,6 +11,10 @@ public interface IAttributeEffect {
 
     float getEffectMultiplier();
 
+    int getDuration();
+
+    int setDuration(int duration);
+
     IAttributeAnomaly getAttributeAnomaly();
 
     ILangEntry getEffectLang();
@@ -20,6 +24,8 @@ public interface IAttributeEffect {
     default void onCriticalHit(LivingEntity attacker, LivingEntity anomalyTarget, IAttributeAnomalyCapability targetCap) {}
 
     default void onLivingDeath(LivingEntity attacker, LivingEntity anomalyTarget, IAttributeAnomalyCapability targetCap) {}
+
+    default void onDisorder(LivingEntity attacker, LivingEntity anomalyTarget, IAttributeAnomalyCapability targetCap) {}
 
     void addInstance(LivingEntity entity, IAttributeEffect instance);
 

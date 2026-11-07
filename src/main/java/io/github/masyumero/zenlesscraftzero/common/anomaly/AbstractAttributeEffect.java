@@ -1,13 +1,10 @@
 package io.github.masyumero.zenlesscraftzero.common.anomaly;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttributeAnomalyCapability;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -47,8 +44,19 @@ public abstract class AbstractAttributeEffect implements IAttributeEffect {
         var dmgBonus = attacker.getAttribute(ZCZAttributes.ATTRIBUTE_DMG_BONUS.get(getAttributeAnomaly()).get());
         var damage = attacker.getAttribute(Attributes.ATTACK_DAMAGE);
         if (anomalyProficiency != null && dmgBonus != null && damage != null) {
-            return (float) (damage.getValue() * (anomalyProficiency.getValue() / 100) * getEffectMultiplier() * (1 + dmgBonus.getValue()));
+            return (float) (damage.getValue() * (anomalyProficiency.getValue() / 100) * getEffectMultiplier() * (1 + 1) * dmgBonus.getValue());
         }
-        return 0;
+        return 0.0f;
+    }
+
+    protected float computeDisorderDamage(LivingEntity attacker) {
+        var baseDamage = computeDamage(attacker);
+        var duration = getDuration();
+
+        return 0.0f;
+    }
+
+    protected void reduceDuration() {
+        setDuration(Math.max(getDuration() -1, 0));
     }
 }

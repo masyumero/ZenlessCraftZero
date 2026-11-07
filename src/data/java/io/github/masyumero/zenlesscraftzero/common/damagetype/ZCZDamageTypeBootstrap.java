@@ -23,5 +23,10 @@ public class ZCZDamageTypeBootstrap {
                 DamageScaling.NEVER,
                 0
         ));
+        context.register(ZCZDamageTypes.DISORDER, new DamageType(
+                "disorder",
+                DamageScaling.NEVER,
+                0
+        ));
     }
 }

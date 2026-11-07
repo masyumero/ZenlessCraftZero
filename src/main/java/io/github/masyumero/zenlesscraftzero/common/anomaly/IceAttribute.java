@@ -5,13 +5,11 @@ import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeAnomaly;
 import io.github.masyumero.zenlesscraftzero.api.anomaly.IAttributeEffect;
 import io.github.masyumero.zenlesscraftzero.api.lang.ILangEntry;
 import io.github.masyumero.zenlesscraftzero.common.capability.entity.IAttributeAnomalyCapability;
-import io.github.masyumero.zenlesscraftzero.common.network.s2c.DamageIndicatorPacket;
-import io.github.masyumero.zenlesscraftzero.common.network.s2c.ZCZS2CNetwork;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZAttributes;
 import io.github.masyumero.zenlesscraftzero.common.registries.ZCZDamageTypes;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -26,7 +24,9 @@ public class IceAttribute extends AbstractAttributeEffect {
     public static final IceAttribute INSTANCE = new IceAttribute();
     private static final Map<LivingEntity, IAttributeEffect> ATTRIBUTES = new HashMap<>();
     private static final UUID frostbiteUUID = UUID.randomUUID();
-    private int frostbiteCount = 0;
+    @Getter
+    @Setter
+    private int duration = 0;
     private int freezeCount = 0;
 
     @Override
@@ -77,17 +77,19 @@ public class IceAttribute extends AbstractAttributeEffect {
             }
         }
         if (anomalyTarget.tickCount % 20 == 0) {
-            if (frostbiteCount != 0) {
+            if (duration != 0) {
                 var critDamage = attacker.getAttribute(ZCZAttributes.CRIT_DAMAGE.get());
-                if (critDamage != null && critDamage.getModifier(frostbiteUUID) == null) {
-                    critDamage.addTransientModifier(new AttributeModifier(
-                            frostbiteUUID,
-                            "frostbite",
-                            0.1,
-                            AttributeModifier.Operation.ADDITION
-                    ));
-                    frostbiteCount = Math.max(frostbiteCount - 1, 0);
-                    if (frostbiteCount == 0) {
+                reduceDuration();
+                if (critDamage != null) {
+                    if (critDamage.getModifier(frostbiteUUID) == null) {
+                        critDamage.addTransientModifier(new AttributeModifier(
+                                frostbiteUUID,
+                                "frostbite",
+                                0.1,
+                                AttributeModifier.Operation.ADDITION
+                        ));
+                    }
+                    if (duration == 0) {
                         critDamage.removeModifier(frostbiteUUID);
                     }
                 }
@@ -121,10 +123,7 @@ public class IceAttribute extends AbstractAttributeEffect {
 
     @Override
     public void onAnomalyEffect(LivingEntity attacker, LivingEntity anomalyTarget, IAttributeAnomalyCapability targetCap, DamageSource source) {
-        frostbiteCount = 10;
+        duration = 10;
         freezeCount = 3;
-        if (anomalyTarget.level() instanceof ServerLevel level) {
-            ZCZS2CNetwork.sendIndicator(level, anomalyTarget.getX(), anomalyTarget.getY() + anomalyTarget.getBbHeight(), anomalyTarget.getZ(), 64.0, new DamageIndicatorPacket((AttributeAnomaly) getAttributeAnomaly(), anomalyTarget.getX(), anomalyTarget.getY() + anomalyTarget.getBbHeight(), anomalyTarget.getZ(), 0, true, false, Component.translatable(getEffectLang().getTranslationKey())));
-        }
     }
 }
